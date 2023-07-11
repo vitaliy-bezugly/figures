@@ -7,6 +7,21 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.15*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.25*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Button Grid.Column="0" Grid.ColumnSpan="2" Content="Header"></Button>
+        
+        <TreeView x:Name="FiguresThreeView" Grid.Column="0" Grid.Row="1"></TreeView>
+        
+        <Canvas x:Name="MainCanvas" Grid.Row="1" Grid.Column="1" Focusable="True">
+            <Button Width="150" Content="Click" Click="ButtonBase_OnClick"></Button>
+        </Canvas>
     </Grid>
 </Window>
