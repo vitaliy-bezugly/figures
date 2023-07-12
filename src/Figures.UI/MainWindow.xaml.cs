@@ -10,7 +10,7 @@ namespace Figures.UI
     public partial class MainWindow
     {
         private readonly DispatcherTimer _timer = new();
-        private readonly UIElementFactory _uiElementFactory = new();
+        private readonly UiElementFactory _uiElementFactory = new();
         private readonly ICollection<Figure> _figures = new List<Figure>();
         
         public MainWindow()

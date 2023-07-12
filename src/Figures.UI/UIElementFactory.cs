@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -7,7 +6,7 @@ using Figures.Domain;
 
 namespace Figures.UI;
 
-public class UIElementFactory
+public class UiElementFactory
 {
     public UIElement Create(GeometryFigure figure)
     {
@@ -40,7 +39,6 @@ public class UIElementFactory
     
     private SolidColorBrush GetRandomBrush()
     {
-        var random = new Random();
         var color = Colors.Brown;
         return new SolidColorBrush(color)
         {
