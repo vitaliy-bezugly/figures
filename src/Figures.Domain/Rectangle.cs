@@ -13,19 +13,21 @@ public class Rectangle : Figure
     public int Width { get; set; }
     public int Height { get; set; }
     
-    public override IEnumerable<Point> Draw(Point endPoint)
+    public override GeometryFigure Draw()
     {
-        var points = new List<Point>()
+        return new GeometryFigure()
         {
-            new Point(StartPoint.X, StartPoint.Y),
-            new Point(StartPoint.X + Width, StartPoint.Y),
-            new Point(StartPoint.X + Width, StartPoint.Y + Height),
-            new Point(StartPoint.X, StartPoint.Y + Height),
+            Type = FigureType.Rectangle,
+            Points = new List<Point>
+            {
+                StartPoint,
+                new Point(StartPoint.X + Width, StartPoint.Y),
+                new Point(StartPoint.X + Width, StartPoint.Y + Height),
+                new Point(StartPoint.X, StartPoint.Y + Height)
+            },
+            Radius = null
         };
-        
-        return points;
     }
-    
 
     protected override void EnsureRebound(Point endPoint)
     {

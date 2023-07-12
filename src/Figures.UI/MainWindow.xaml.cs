@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using Figures.Domain;
 using Rectangle = Figures.Domain.Rectangle;
@@ -13,6 +10,7 @@ namespace Figures.UI
     public partial class MainWindow
     {
         private readonly DispatcherTimer _timer = new();
+        private readonly UIElementFactory _uiElementFactory = new();
         private readonly ICollection<Figure> _figures = new List<Figure>();
         
         public MainWindow()
@@ -30,7 +28,10 @@ namespace Figures.UI
         {
             var bottomRightPoint = new System.Drawing.Point(((int)MainCanvas.ActualWidth), ((int)MainCanvas.ActualHeight));
             
-            ClearCanvas();
+            if (_figures.Count == 0)
+                return;
+            
+            MainCanvas.Children.Clear();
             MoveFigures(_figures, bottomRightPoint);
         }
 
@@ -39,34 +40,13 @@ namespace Figures.UI
             foreach (var figure in figures)
             {
                 figure.Move(endPoint);
-                var points = figure.Draw(endPoint);
-                var polygon = GetPolygon(points);
-
-                polygon.Tag = figure;
-                MainCanvas.Children.Add(polygon);
+                var geometryFigure = figure.Draw();
+                
+                var uiElement = _uiElementFactory.Create(geometryFigure);
+                MainCanvas.Children.Add(uiElement);
             }
         }
-
-        private void ClearCanvas()
-        {
-            MainCanvas.Children.Clear();
-        }
-
-        private Polygon GetPolygon(IEnumerable<System.Drawing.Point> points)
-        {
-            var partiallyTransparentSolidColorBrush = new SolidColorBrush(Colors.Green)
-            {
-                Opacity = 0.55
-            };
-            
-            var mySquare = new Polygon
-            {
-                Fill = partiallyTransparentSolidColorBrush,
-                Points = new PointCollection(points.Select(x => new Point(x.X, x.Y)))
-            };
-
-            return mySquare;
-        }
+        
 
         private IEnumerable<string> Figures
         {
@@ -78,17 +58,35 @@ namespace Figures.UI
 
         private void AddRectangle()
         {
-            var randomPoint = new System.Drawing.Point(Random.Shared.Next(0, (int)MainCanvas.ActualWidth), Random.Shared.Next(0, (int)MainCanvas.ActualHeight));
             var width = Random.Shared.Next(10, 100);
             var height = Random.Shared.Next(10, width);
             
+            var randomPoint = new System.Drawing.Point(Random.Shared.Next(0, (int)MainCanvas.ActualWidth - width), Random.Shared.Next(0, (int)MainCanvas.ActualHeight) - height);
             var rectangle = new Rectangle(randomPoint, Random.Shared.Next(10, 25), Random.Shared.Next(10, 25), width, height);
+            
             _figures.Add(rectangle);
+        }
+
+        private void AddCircle()
+        {
+            int radius = Random.Shared.Next(10, 30);
+            
+            var randomPoint = new System.Drawing.Point(Random.Shared.Next(0, (int)MainCanvas.ActualWidth - radius), Random.Shared.Next(0, (int)MainCanvas.ActualHeight) - radius);
+            var circle = new Circle(randomPoint, Random.Shared.Next(10, 25), Random.Shared.Next(10, 25), radius);
+            
+            _figures.Add(circle);
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            AddRectangle();
+            if(Random.Shared.Next(1, 3) == 1)
+            {
+                AddRectangle();
+            }
+            else
+            {
+                AddCircle();
+            }
         }
     }
 }

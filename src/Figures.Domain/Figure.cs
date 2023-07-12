@@ -13,7 +13,7 @@ public abstract class Figure
     public Point Speed { get; set; }
     public Point StartPoint { get; set; }
 
-    public abstract IEnumerable<Point> Draw(Point endPoint);
+    public abstract GeometryFigure Draw();
 
     public virtual void Move(Point endPoint)
     {
