@@ -4,30 +4,39 @@ namespace Figures.Domain;
 
 public class Rectangle : Figure
 {
-    public Rectangle(Point point, Point speed, int width) : base(point, speed)
+    public Rectangle(Point startPoint, int dX, int dY, int width, int height) : base(startPoint, dX, dY)
     {
         Width = width;
+        Height = height;
     }
 
     public int Width { get; set; }
+    public int Height { get; set; }
     
     public override IEnumerable<Point> Draw(Point endPoint)
     {
-        var randomPoint = new Point(Random.Shared.Next(0, (int)endPoint.X), Random.Shared.Next(0, (int)endPoint.Y));
-
         var points = new List<Point>()
         {
-            new Point(randomPoint.X, randomPoint.Y),
-            new Point(randomPoint.X + Width, randomPoint.Y),
-            new Point(randomPoint.X + Width, randomPoint.Y + Width),
-            new Point(randomPoint.X, randomPoint.Y + Width),
+            new Point(StartPoint.X, StartPoint.Y),
+            new Point(StartPoint.X + Width, StartPoint.Y),
+            new Point(StartPoint.X + Width, StartPoint.Y + Height),
+            new Point(StartPoint.X, StartPoint.Y + Height),
         };
         
         return points;
     }
+    
 
-    public override void Move(int x, int y)
+    protected override void EnsureRebound(Point endPoint)
     {
-        throw new NotImplementedException();
+        if (StartPoint.X < 0 || StartPoint.X + Width > endPoint.X)
+        {
+            Speed = new Point(-Speed.X, Speed.Y);
+        }
+
+        if (StartPoint.Y < 0 || StartPoint.Y + Height > endPoint.Y)
+        {
+            Speed = new Point(Speed.X, -Speed.Y);
+        }
     }
 }

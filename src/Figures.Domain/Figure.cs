@@ -4,15 +4,22 @@ namespace Figures.Domain;
 
 public abstract class Figure
 {
-    protected Figure(Point point, Point speed)
+    protected Figure(Point startPoint, int dX, int dY)
     {
-        Point = point;
-        Speed = speed;
+        StartPoint = startPoint;
+        Speed = new Point(dX, dY);
     }
 
     public Point Speed { get; set; }
-    public Point Point { get; set; }
+    public Point StartPoint { get; set; }
 
     public abstract IEnumerable<Point> Draw(Point endPoint);
-    public abstract void Move(int x, int y);
+
+    public virtual void Move(Point endPoint)
+    {
+        EnsureRebound(endPoint);
+        StartPoint = new Point(StartPoint.X + Speed.X, StartPoint.Y + Speed.Y);
+    }
+    
+    protected abstract void EnsureRebound(Point endPoint);
 }

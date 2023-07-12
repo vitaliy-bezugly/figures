@@ -18,10 +18,12 @@
         
         <Button Grid.Column="0" Grid.ColumnSpan="2" Content="Header"></Button>
         
-        <TreeView x:Name="FiguresThreeView" Grid.Column="0" Grid.Row="1"></TreeView>
+        <StackPanel Grid.Column="0" Grid.Row="1">
+            <TreeView x:Name="FiguresThreeView"></TreeView>
+            <Button Width="150" Content="Click" Click="ButtonBase_OnClick"></Button>
+        </StackPanel>
         
         <Canvas x:Name="MainCanvas" Grid.Row="1" Grid.Column="1" Focusable="True">
-            <Button Width="150" Content="Click" Click="ButtonBase_OnClick"></Button>
         </Canvas>
     </Grid>
 </Window>
