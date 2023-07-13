@@ -11,16 +11,23 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.25*"/>
+            <ColumnDefinition Width="0.15*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
         <Button Grid.Column="0" Grid.ColumnSpan="2" Content="Header"></Button>
         
-        <StackPanel Grid.Column="0" Grid.Row="1">
-            <TreeView x:Name="FiguresThreeView"></TreeView>
-            <Button Width="150" Content="Click" Click="ButtonBase_OnClick"></Button>
-        </StackPanel>
+        <TreeView x:Name="FiguresThreeView" Grid.Column="0" Grid.Row="1">
+            <TextBox>Figures: </TextBox>
+            <TreeViewItem x:Name="CirclesTreeViewItem" MouseLeftButtonUp="CirclesTreeViewItem_OnMouseLeftButtonUp" Header="Circles">
+            </TreeViewItem>
+            
+            <TreeViewItem x:Name="RectangleTreeViewItem" MouseLeftButtonUp="RectanglesTreeViewItem_OnMouseLeftButtonUp" Header="Rectangles">
+            </TreeViewItem>
+            
+            <TreeViewItem x:Name="TriangleTreeViewItem" MouseLeftButtonUp="TriangleTreeViewItem_OnMouseLeftButtonUp" Header="Triangles">
+            </TreeViewItem>
+        </TreeView>
         
         <Canvas x:Name="MainCanvas" Grid.Row="1" Grid.Column="1" Focusable="True">
         </Canvas>

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using Figures.Domain;
 using Rectangle = Figures.Domain.Rectangle;
@@ -12,13 +14,14 @@ namespace Figures.UI
         private readonly DispatcherTimer _timer = new();
         private readonly UiElementFactory _uiElementFactory = new();
         private readonly ICollection<Figure> _figures = new List<Figure>();
+        private int _figureCounter;
         
         public MainWindow()
         {
             InitializeComponent();
-            
-            FiguresThreeView.ItemsSource = Figures;
-            
+
+            _figureCounter = 0;
+
             _timer.Tick += TimerOnTick;
             _timer.Interval = TimeSpan.FromMilliseconds(50);
             _timer.Start();
@@ -46,17 +49,8 @@ namespace Figures.UI
                 MainCanvas.Children.Add(uiElement);
             }
         }
-        
 
-        private IEnumerable<string> Figures
-        {
-            get
-            {
-                return new[] { "Circle", "Rectangle", "Triangle" };
-            }
-        }
-
-        private void AddRectangle()
+        private Figure AddRectangle()
         {
             var width = Random.Shared.Next(10, 100);
             var height = Random.Shared.Next(10, width);
@@ -65,9 +59,10 @@ namespace Figures.UI
             var rectangle = new Rectangle(randomPoint, Random.Shared.Next(10, 25), Random.Shared.Next(10, 25), width, height);
             
             _figures.Add(rectangle);
+            return rectangle;
         }
 
-        private void AddCircle()
+        private Figure AddCircle()
         {
             int radius = Random.Shared.Next(10, 30);
             
@@ -75,18 +70,57 @@ namespace Figures.UI
             var circle = new Circle(randomPoint, Random.Shared.Next(10, 25), Random.Shared.Next(10, 25), radius);
             
             _figures.Add(circle);
+            return circle;
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private Figure AddTriable()
         {
-            if(Random.Shared.Next(1, 3) == 1)
+            int edgeLength = Random.Shared.Next(20, 60);
+            
+            var randomPoint = new System.Drawing.Point(Random.Shared.Next(0, (int)MainCanvas.ActualWidth - edgeLength), Random.Shared.Next(0, (int)MainCanvas.ActualHeight) - edgeLength);
+            var triangle = new Triangle(randomPoint, Random.Shared.Next(10, 25), Random.Shared.Next(10, 25), edgeLength);
+            
+            _figures.Add(triangle);
+            return triangle;
+        }
+
+        private void CirclesTreeViewItem_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var figure = AddCircle();
+
+            var child = new TreeViewItem
             {
-                AddRectangle();
-            }
-            else
+                Header = "Circle #" + _figureCounter++,
+                Tag = figure
+            };
+
+            CirclesTreeViewItem.Items.Add(child);
+        }
+        
+        private void RectanglesTreeViewItem_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var figure = AddRectangle();
+
+            var child = new TreeViewItem
             {
-                AddCircle();
-            }
+                Header = "Rectangle #" + _figureCounter++,
+                Tag = figure
+            };
+
+            RectangleTreeViewItem.Items.Add(child);
+        }
+
+        private void TriangleTreeViewItem_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var figure = AddTriable();
+            
+            var child = new TreeViewItem
+            {
+                Header = "Triangle #" + _figureCounter++,
+                Tag = figure
+            };
+            
+            TriangleTreeViewItem.Items.Add(child);
         }
     }
 }
