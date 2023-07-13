@@ -103,10 +103,24 @@ namespace Figures.UI
             };
 
             child.MouseRightButtonUp += RemoveTreeViewItem_OnMouseRightButtonUp;
+            child.Selected += TreeViewItem_OnSelected;
             
             treeViewItem.Items.Add(child);
         }
-        
+
+        private void TreeViewItem_OnSelected(object sender, RoutedEventArgs e)
+        {
+            var selectedTreeView = sender as TreeViewItem;
+            if(selectedTreeView is null)
+                return;
+            
+            var figure = selectedTreeView.Tag as Figure;
+            if(figure is null)
+                throw new InvalidOperationException();
+            
+            ChangeButtonContentBasedOnFigureStatus(StopOrContinueButton, figure.Stopped);
+        }
+
         private Figure CreateRectangle() => _figuresBuilder.BuildRectangle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
 
         private Figure CreateCircle() => _figuresBuilder.BuildCircle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
@@ -124,6 +138,12 @@ namespace Figures.UI
                 return;
             
             figure.Stopped = !figure.Stopped;
+            ChangeButtonContentBasedOnFigureStatus(StopOrContinueButton, figure.Stopped);
+        }
+        
+        private void ChangeButtonContentBasedOnFigureStatus(Button button, bool stopped)
+        {
+            button.Content = stopped ? "Continue" : "Stop";
         }
     }
 }
