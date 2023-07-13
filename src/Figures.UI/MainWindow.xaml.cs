@@ -71,7 +71,7 @@ namespace Figures.UI
             CreateFigureAndToTreeView(creator, child);
         }
         
-        private void TreeViewItem_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        private void RemoveTreeViewItem_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             var child = sender as TreeViewItem;
             var parent = child?.Parent as TreeViewItem;
@@ -101,7 +101,7 @@ namespace Figures.UI
                 Tag = figure,
             };
 
-            child.MouseRightButtonUp += TreeViewItem_OnMouseRightButtonUp;
+            child.MouseRightButtonUp += RemoveTreeViewItem_OnMouseRightButtonUp;
             treeViewItem.Items.Add(child);
         }
         
@@ -110,10 +110,5 @@ namespace Figures.UI
         private Figure CreateCircle() => _figuresBuilder.BuildCircle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
 
         private Figure CreateTriable() => _figuresBuilder.BuildTriangle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
-
-        private void CirclesTreeViewItem_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
