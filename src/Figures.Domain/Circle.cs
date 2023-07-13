@@ -4,7 +4,7 @@ namespace Figures.Domain;
 
 public class Circle : Figure
 {
-    public Circle(Point startPoint, int dX, int dY, int radius) : base(startPoint, dX, dY)
+    public Circle(Point centralPoint, int dX, int dY, int radius) : base(centralPoint, dX, dY)
     {
         Radius = radius;
     }
@@ -18,7 +18,7 @@ public class Circle : Figure
             Type = FigureType.Circle,
             Points = new List<Point>
             {
-                StartPoint
+                CentralPoint
             },
             Radius = Radius
         };
@@ -26,10 +26,10 @@ public class Circle : Figure
 
     protected override void EnsureRebound(Point endPoint)
     {
-        if(StartPoint.X - Radius < 0 || StartPoint.X + Radius > endPoint.X)
+        if(CentralPoint.X - Radius < 0 || CentralPoint.X + Radius > endPoint.X)
             Speed = new Point(-Speed.X, Speed.Y);
         
-        if(StartPoint.Y - Radius < 0 || StartPoint.Y + Radius > endPoint.Y)
+        if(CentralPoint.Y - Radius < 0 || CentralPoint.Y + Radius > endPoint.Y)
             Speed = new Point(Speed.X, -Speed.Y);
     }
 }

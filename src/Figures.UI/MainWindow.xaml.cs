@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
+using System.Drawing;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Figures.Domain;
-using Rectangle = Figures.Domain.Rectangle;
 
 namespace Figures.UI
 {
@@ -13,6 +12,7 @@ namespace Figures.UI
     {
         private readonly DispatcherTimer _timer = new();
         private readonly UiElementFactory _uiElementFactory = new();
+        private readonly FiguresBuilder _figuresBuilder = new();
         private readonly ICollection<Figure> _figures = new List<Figure>();
         private int _figureCounter;
         
@@ -29,7 +29,7 @@ namespace Figures.UI
 
         private void TimerOnTick(object? sender, EventArgs e)
         {
-            var bottomRightPoint = new System.Drawing.Point(((int)MainCanvas.ActualWidth), ((int)MainCanvas.ActualHeight));
+            var bottomRightPoint = new Point(((int)MainCanvas.ActualWidth), ((int)MainCanvas.ActualHeight));
             
             if (_figures.Count == 0)
                 return;
@@ -38,89 +38,56 @@ namespace Figures.UI
             MoveFigures(_figures, bottomRightPoint);
         }
 
-        private void MoveFigures(IEnumerable<Figure> figures, System.Drawing.Point endPoint)
+        private void MoveFigures(IEnumerable<Figure> figures, Point endPoint)
         {
             foreach (var figure in figures)
             {
                 figure.Move(endPoint);
+                
                 var geometryFigure = figure.Draw();
                 
                 var uiElement = _uiElementFactory.Create(geometryFigure);
                 MainCanvas.Children.Add(uiElement);
             }
         }
-
-        private Figure AddRectangle()
+        
+        private void TreeViewItem_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            var width = Random.Shared.Next(10, 100);
-            var height = Random.Shared.Next(10, width);
-            
-            var randomPoint = new System.Drawing.Point(Random.Shared.Next(0, (int)MainCanvas.ActualWidth - width), Random.Shared.Next(0, (int)MainCanvas.ActualHeight) - height);
-            var rectangle = new Rectangle(randomPoint, Random.Shared.Next(10, 25), Random.Shared.Next(10, 25), width, height);
-            
-            _figures.Add(rectangle);
-            return rectangle;
-        }
-
-        private Figure AddCircle()
-        {
-            int radius = Random.Shared.Next(10, 30);
-            
-            var randomPoint = new System.Drawing.Point(Random.Shared.Next(0, (int)MainCanvas.ActualWidth - radius), Random.Shared.Next(0, (int)MainCanvas.ActualHeight) - radius);
-            var circle = new Circle(randomPoint, Random.Shared.Next(10, 25), Random.Shared.Next(10, 25), radius);
-            
-            _figures.Add(circle);
-            return circle;
-        }
-
-        private Figure AddTriable()
-        {
-            int edgeLength = Random.Shared.Next(20, 60);
-            
-            var randomPoint = new System.Drawing.Point(Random.Shared.Next(0, (int)MainCanvas.ActualWidth - edgeLength), Random.Shared.Next(0, (int)MainCanvas.ActualHeight) - edgeLength);
-            var triangle = new Triangle(randomPoint, Random.Shared.Next(10, 25), Random.Shared.Next(10, 25), edgeLength);
-            
-            _figures.Add(triangle);
-            return triangle;
-        }
-
-        private void CirclesTreeViewItem_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            var figure = AddCircle();
-
-            var child = new TreeViewItem
+            var child = sender as TreeViewItem;
+            if (child is null)
             {
-                Header = "Circle #" + _figureCounter++,
-                Tag = figure
+                throw new InvalidOperationException();
+            }
+            
+            Func<Figure> creator = child.Name switch
+            {
+                "RectanglesTreeViewItem" => CreateRectangle,
+                "TrianglesTreeViewItem" => CreateTriable,
+                "CirclesTreeViewItem" => CreateCircle,
+                _ => throw new InvalidOperationException()
             };
 
-            CirclesTreeViewItem.Items.Add(child);
+            CreateFigureAndToTreeView(creator, child);
         }
         
-        private void RectanglesTreeViewItem_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void CreateFigureAndToTreeView(Func<Figure> creator, TreeViewItem treeViewItem)
         {
-            var figure = AddRectangle();
-
-            var child = new TreeViewItem
-            {
-                Header = "Rectangle #" + _figureCounter++,
-                Tag = figure
-            };
-
-            RectangleTreeViewItem.Items.Add(child);
-        }
-
-        private void TriangleTreeViewItem_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            var figure = AddTriable();
+            Figure figure = creator.Invoke();
+            _figures.Add(figure);
             
             var child = new TreeViewItem
             {
-                Header = "Triangle #" + _figureCounter++,
+                Header = "Figure #" + _figureCounter++,
                 Tag = figure
             };
-            
-            TriangleTreeViewItem.Items.Add(child);
+
+            treeViewItem.Items.Add(child);
         }
+        
+        private Figure CreateRectangle() => _figuresBuilder.BuildRectangle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
+
+        private Figure CreateCircle() => _figuresBuilder.BuildCircle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
+
+        private Figure CreateTriable() => _figuresBuilder.BuildTriangle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
     }
 }

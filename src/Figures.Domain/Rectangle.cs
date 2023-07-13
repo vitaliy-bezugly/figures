@@ -4,7 +4,7 @@ namespace Figures.Domain;
 
 public class Rectangle : Figure
 {
-    public Rectangle(Point startPoint, int dX, int dY, int width, int height) : base(startPoint, dX, dY)
+    public Rectangle(Point centralPoint, int dX, int dY, int width, int height) : base(centralPoint, dX, dY)
     {
         Width = width;
         Height = height;
@@ -20,10 +20,10 @@ public class Rectangle : Figure
             Type = FigureType.Rectangle,
             Points = new List<Point>
             {
-                StartPoint,
-                new Point(StartPoint.X + Width, StartPoint.Y),
-                new Point(StartPoint.X + Width, StartPoint.Y + Height),
-                new Point(StartPoint.X, StartPoint.Y + Height)
+                new Point(CentralPoint.X - (Width / 2), CentralPoint.Y - (Height / 2)),
+                new Point(CentralPoint.X + (Width / 2), CentralPoint.Y - (Height / 2)),
+                new Point(CentralPoint.X + (Width / 2), CentralPoint.Y + (Height / 2)),
+                new Point(CentralPoint.X - (Width / 2), CentralPoint.Y + (Height / 2))
             },
             Radius = null
         };
@@ -31,14 +31,10 @@ public class Rectangle : Figure
 
     protected override void EnsureRebound(Point endPoint)
     {
-        if (StartPoint.X < 0 || StartPoint.X + Width > endPoint.X)
-        {
+        if(CentralPoint.X - (Width / 2) < 0 || CentralPoint.X + (Width / 2) > endPoint.X)
             Speed = new Point(-Speed.X, Speed.Y);
-        }
-
-        if (StartPoint.Y < 0 || StartPoint.Y + Height > endPoint.Y)
-        {
+        
+        if(CentralPoint.Y - (Height / 2) < 0 || CentralPoint.Y + (Height / 2) > endPoint.Y)
             Speed = new Point(Speed.X, -Speed.Y);
-        }
     }
 }

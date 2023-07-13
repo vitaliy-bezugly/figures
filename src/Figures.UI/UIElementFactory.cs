@@ -10,7 +10,7 @@ public class UiElementFactory
 {
     public UIElement Create(GeometryFigure figure)
     {
-        var partiallyTransparentSolidColorBrush = GetRandomBrush();
+        var partiallyTransparentSolidColorBrush = GetBrashBasedOnFigureType(figure.Type);
 
         if (figure.Type == FigureType.Circle)
         {
@@ -37,12 +37,19 @@ public class UiElementFactory
         return polygon;
     }
     
-    private SolidColorBrush GetRandomBrush()
+    private SolidColorBrush GetBrashBasedOnFigureType(FigureType type)
     {
-        var color = Colors.Brown;
-        return new SolidColorBrush(color)
+        return type switch
         {
-            Opacity = 0.5
+            FigureType.Circle => new SolidColorBrush(GetCircleColor()),
+            FigureType.Rectangle => new SolidColorBrush(GetRectangleColor()),
+            FigureType.Triangle => new SolidColorBrush(GetTriangleColor()),
         };
     }
+    
+    private Color GetCircleColor() => Colors.Brown;
+    
+    private Color GetRectangleColor() => Colors.Blue;
+    
+    private Color GetTriangleColor() => Colors.Green;
 }

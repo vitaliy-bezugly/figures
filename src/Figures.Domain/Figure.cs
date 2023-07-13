@@ -4,21 +4,21 @@ namespace Figures.Domain;
 
 public abstract class Figure
 {
-    protected Figure(Point startPoint, int dX, int dY)
+    protected Figure(Point centralPoint, int dX, int dY)
     {
-        StartPoint = startPoint;
+        CentralPoint = centralPoint;
         Speed = new Point(dX, dY);
     }
 
     public Point Speed { get; set; }
-    public Point StartPoint { get; set; }
+    public Point CentralPoint { get; set; }
 
     public abstract GeometryFigure Draw();
 
     public virtual void Move(Point endPoint)
     {
         EnsureRebound(endPoint);
-        StartPoint = new Point(StartPoint.X + Speed.X, StartPoint.Y + Speed.Y);
+        CentralPoint = new Point(CentralPoint.X + Speed.X, CentralPoint.Y + Speed.Y);
     }
     
     protected abstract void EnsureRebound(Point endPoint);

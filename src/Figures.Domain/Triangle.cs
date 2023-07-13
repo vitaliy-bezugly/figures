@@ -4,7 +4,7 @@ namespace Figures.Domain;
 
 public class Triangle : Figure
 {
-    public Triangle(Point startPoint, int dX, int dY, int edgeLength) : base(startPoint, dX, dY)
+    public Triangle(Point centralPoint, int dX, int dY, int edgeLength) : base(centralPoint, dX, dY)
     {
         EdgeLength = edgeLength;
     }
@@ -15,24 +15,24 @@ public class Triangle : Figure
     {
         return new GeometryFigure()
         {
-            Type = FigureType.Rectangle,
+            Type = FigureType.Triangle,
             Points = new List<Point>
             {
-                StartPoint,
-                new Point(StartPoint.X - (EdgeLength / 2), StartPoint.Y + EdgeLength),
-                new Point(StartPoint.X + (EdgeLength / 2), StartPoint.Y + EdgeLength)
+                new(CentralPoint.X, CentralPoint.Y - (EdgeLength / 2)),
+                new(CentralPoint.X - (EdgeLength / 2), CentralPoint.Y + (EdgeLength / 2)),
+                new(CentralPoint.X + (EdgeLength / 2), CentralPoint.Y + (EdgeLength / 2))
             }
         };
     }
 
     protected override void EnsureRebound(Point endPoint)
     {
-        if (StartPoint.X - (EdgeLength / 2) < 0 || StartPoint.X + (EdgeLength / 2) > endPoint.X)
+        if (CentralPoint.X - (EdgeLength / 2) < 0 || CentralPoint.X + (EdgeLength / 2) > endPoint.X)
         {
             Speed = new Point(-Speed.X, Speed.Y);
         }
 
-        if (StartPoint.Y < 0 || StartPoint.Y + EdgeLength > endPoint.Y)
+        if (CentralPoint.Y - (EdgeLength / 2) < 0 || CentralPoint.Y + (EdgeLength / 2) > endPoint.Y)
         {
             Speed = new Point(Speed.X, -Speed.Y);
         }
