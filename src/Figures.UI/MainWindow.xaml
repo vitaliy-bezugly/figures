@@ -15,7 +15,9 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <Button Grid.Column="0" Grid.ColumnSpan="2" Content="Header"></Button>
+        <Border Grid.Column="0" Grid.ColumnSpan="2" Background="DodgerBlue">
+            <Label Content="Figures Movement" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Foreground="#fff"></Label>
+        </Border>
         
         <TreeView x:Name="FiguresThreeView" Grid.Column="0" Grid.Row="1">
             <TextBox>Figures: </TextBox>
