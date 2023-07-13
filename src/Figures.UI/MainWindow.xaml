@@ -19,13 +19,13 @@
         
         <TreeView x:Name="FiguresThreeView" Grid.Column="0" Grid.Row="1">
             <TextBox>Figures: </TextBox>
-            <TreeViewItem x:Name="CirclesTreeViewItem" MouseLeftButtonUp="TreeViewItem_OnMouseLeftButtonUp" Header="Circles">
+            <TreeViewItem x:Name="CirclesTreeViewItem" Header="Circles" MouseLeftButtonUp="TreeViewItem_OnMouseLeftButtonUp">
             </TreeViewItem>
             
-            <TreeViewItem x:Name="RectanglesTreeViewItem" MouseLeftButtonUp="TreeViewItem_OnMouseLeftButtonUp" Header="Rectangles">
+            <TreeViewItem x:Name="RectanglesTreeViewItem" Header="Rectangles" MouseLeftButtonUp="TreeViewItem_OnMouseLeftButtonUp">
             </TreeViewItem>
             
-            <TreeViewItem x:Name="TrianglesTreeViewItem" MouseLeftButtonUp="TreeViewItem_OnMouseLeftButtonUp" Header="Triangles">
+            <TreeViewItem x:Name="TrianglesTreeViewItem" Header="Triangles" MouseLeftButtonUp="TreeViewItem_OnMouseLeftButtonUp">
             </TreeViewItem>
         </TreeView>
         

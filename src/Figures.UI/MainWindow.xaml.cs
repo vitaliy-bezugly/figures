@@ -31,10 +31,11 @@ namespace Figures.UI
         {
             var bottomRightPoint = new Point(((int)MainCanvas.ActualWidth), ((int)MainCanvas.ActualHeight));
             
+            MainCanvas.Children.Clear();
+            
             if (_figures.Count == 0)
                 return;
             
-            MainCanvas.Children.Clear();
             MoveFigures(_figures, bottomRightPoint);
         }
 
@@ -70,6 +71,25 @@ namespace Figures.UI
             CreateFigureAndToTreeView(creator, child);
         }
         
+        private void TreeViewItem_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var child = sender as TreeViewItem;
+            var parent = child?.Parent as TreeViewItem;
+            if (child is null || parent is null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            Figure? figure = child.Tag as Figure;
+            if (figure is null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            _figures.Remove(figure);
+            parent.Items.Remove(child);
+        }
+        
         private void CreateFigureAndToTreeView(Func<Figure> creator, TreeViewItem treeViewItem)
         {
             Figure figure = creator.Invoke();
@@ -78,9 +98,10 @@ namespace Figures.UI
             var child = new TreeViewItem
             {
                 Header = "Figure #" + _figureCounter++,
-                Tag = figure
+                Tag = figure,
             };
 
+            child.MouseRightButtonUp += TreeViewItem_OnMouseRightButtonUp;
             treeViewItem.Items.Add(child);
         }
         
@@ -89,5 +110,10 @@ namespace Figures.UI
         private Figure CreateCircle() => _figuresBuilder.BuildCircle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
 
         private Figure CreateTriable() => _figuresBuilder.BuildTriangle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
+
+        private void CirclesTreeViewItem_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
