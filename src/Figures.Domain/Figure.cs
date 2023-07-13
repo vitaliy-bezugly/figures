@@ -12,11 +12,15 @@ public abstract class Figure
 
     public Point Speed { get; set; }
     public Point CentralPoint { get; set; }
+    public bool Stopped { get; set; }
 
     public abstract GeometryFigure Draw();
 
     public virtual void Move(Point endPoint)
     {
+        if(Stopped)
+            return;
+        
         EnsureRebound(endPoint);
         CentralPoint = new Point(CentralPoint.X + Speed.X, CentralPoint.Y + Speed.Y);
     }

@@ -19,17 +19,21 @@
             <Label Content="Figures Movement" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Foreground="#fff"></Label>
         </Border>
         
-        <TreeView x:Name="FiguresThreeView" Grid.Column="0" Grid.Row="1">
-            <TextBox>Figures: </TextBox>
-            <TreeViewItem x:Name="CirclesTreeViewItem" Header="Circles" MouseLeftButtonUp="TreeViewItem_OnMouseLeftButtonUp">
-            </TreeViewItem>
+        <StackPanel Grid.Column="0" Grid.Row="1">
+            <TreeView x:Name="FiguresThreeView">
+                <TextBox>Figures: </TextBox>
+                <TreeViewItem x:Name="CirclesTreeViewItem" Header="Circles" MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
+                </TreeViewItem>
             
-            <TreeViewItem x:Name="RectanglesTreeViewItem" Header="Rectangles" MouseLeftButtonUp="TreeViewItem_OnMouseLeftButtonUp">
-            </TreeViewItem>
+                <TreeViewItem x:Name="RectanglesTreeViewItem" Header="Rectangles" MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
+                </TreeViewItem>
             
-            <TreeViewItem x:Name="TrianglesTreeViewItem" Header="Triangles" MouseLeftButtonUp="TreeViewItem_OnMouseLeftButtonUp">
-            </TreeViewItem>
-        </TreeView>
+                <TreeViewItem x:Name="TrianglesTreeViewItem" Header="Triangles" MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
+                </TreeViewItem>
+            </TreeView>
+            
+            <Button x:Name="StopOrContinueButton" Content="Stop / Continue" Click="StopOrContinueButton_OnClick"></Button>
+        </StackPanel>
         
         <Canvas x:Name="MainCanvas" Grid.Row="1" Grid.Column="1" Focusable="True">
         </Canvas>

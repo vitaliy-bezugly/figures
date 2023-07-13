@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Figures.Domain;
+using Point = System.Drawing.Point;
 
 namespace Figures.UI
 {
@@ -52,14 +53,14 @@ namespace Figures.UI
             }
         }
         
-        private void TreeViewItem_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void TreeViewItem_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var child = sender as TreeViewItem;
             if (child is null)
             {
                 throw new InvalidOperationException();
             }
-            
+
             Func<Figure> creator = child.Name switch
             {
                 "RectanglesTreeViewItem" => CreateRectangle,
@@ -70,7 +71,7 @@ namespace Figures.UI
 
             CreateFigureAndToTreeView(creator, child);
         }
-        
+
         private void RemoveTreeViewItem_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             var child = sender as TreeViewItem;
@@ -102,6 +103,7 @@ namespace Figures.UI
             };
 
             child.MouseRightButtonUp += RemoveTreeViewItem_OnMouseRightButtonUp;
+            
             treeViewItem.Items.Add(child);
         }
         
@@ -110,5 +112,18 @@ namespace Figures.UI
         private Figure CreateCircle() => _figuresBuilder.BuildCircle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
 
         private Figure CreateTriable() => _figuresBuilder.BuildTriangle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
+
+        private void StopOrContinueButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var selectedTreeView = FiguresThreeView.SelectedItem as TreeViewItem;
+            if(selectedTreeView is null)
+                return;
+            
+            var figure = selectedTreeView.Tag as Figure;
+            if (figure is null)
+                return;
+            
+            figure.Stopped = !figure.Stopped;
+        }
     }
 }
