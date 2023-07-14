@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Figures.UI", "src\Figures.U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Figures.Domain", "src\Figures.Domain\Figures.Domain.csproj", "{1F95C8F1-2935-4FBA-9657-EF269C831B07}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Figures.SpawnRandomizer", "src\Figures.SpawnRandomizer\Figures.SpawnRandomizer.csproj", "{5FFC8B5B-CE8A-4033-97E6-0F0C7CFB293F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{83741E48-3596-4845-8B8A-3CBF4DC89544} = {D992682E-0A2F-4FC0-9FD7-119E3A2512B6}
 		{1F95C8F1-2935-4FBA-9657-EF269C831B07} = {D992682E-0A2F-4FC0-9FD7-119E3A2512B6}
+		{5FFC8B5B-CE8A-4033-97E6-0F0C7CFB293F} = {D992682E-0A2F-4FC0-9FD7-119E3A2512B6}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{83741E48-3596-4845-8B8A-3CBF4DC89544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -32,5 +35,9 @@ Global
 		{1F95C8F1-2935-4FBA-9657-EF269C831B07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F95C8F1-2935-4FBA-9657-EF269C831B07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F95C8F1-2935-4FBA-9657-EF269C831B07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FFC8B5B-CE8A-4033-97E6-0F0C7CFB293F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FFC8B5B-CE8A-4033-97E6-0F0C7CFB293F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FFC8B5B-CE8A-4033-97E6-0F0C7CFB293F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FFC8B5B-CE8A-4033-97E6-0F0C7CFB293F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
