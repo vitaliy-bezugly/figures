@@ -8,8 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Figures.SpawnRandomizer" Version="1.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\Figures.Domain\Figures.Domain.csproj" />
-      <ProjectReference Include="..\Figures.SpawnRandomizer\Figures.SpawnRandomizer.csproj" />
     </ItemGroup>
 
     <ItemGroup>

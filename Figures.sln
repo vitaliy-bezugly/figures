@@ -3,6 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D992682E-0A2F-4FC0-9FD7-119E3A2512B6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{7F228025-D680-4F29-838F-1AF4E48E37EC}"
+	ProjectSection(SolutionItems) = preProject
+		docs\nuget.md = docs\nuget.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution-folder", "solution-folder", "{723A5F8D-BE9E-4E15-A2C1-5026F164D46D}"
 	ProjectSection(SolutionItems) = preProject
