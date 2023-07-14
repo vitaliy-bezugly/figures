@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -44,6 +45,7 @@ public class UiElementFactory
             FigureType.Circle => new SolidColorBrush(GetCircleColor()),
             FigureType.Rectangle => new SolidColorBrush(GetRectangleColor()),
             FigureType.Triangle => new SolidColorBrush(GetTriangleColor()),
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, String.Empty)
         };
     }
     
