@@ -1,0 +1,16 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    
+    <system:String x:Key="Header">Figures movement</system:String>
+    
+    <system:String x:Key="Figures">Figures</system:String>
+    <system:String x:Key="Rectangles">Rectangles</system:String>
+    <system:String x:Key="Triangles">Triangles</system:String>
+    <system:String x:Key="Circles">Circles</system:String>
+    
+    <system:String x:Key="Stop">Stop</system:String>
+    <system:String x:Key="Continue">Continue</system:String>
+    
+    <system:String x:Key="Language">Language</system:String>
+</ResourceDictionary>

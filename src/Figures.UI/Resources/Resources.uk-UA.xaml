@@ -1,0 +1,16 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    
+    <system:String x:Key="Header">Переміщення фігур</system:String>
+    
+    <system:String x:Key="Figures">Фігури</system:String>
+    <system:String x:Key="Rectangles">Прямокутники</system:String>
+    <system:String x:Key="Triangles">Трикутники</system:String>
+    <system:String x:Key="Circles">Кола</system:String>
+    
+    <system:String x:Key="Stop">Зупинитись</system:String>
+    <system:String x:Key="Continue">Продовжити</system:String>
+    
+    <system:String x:Key="Language">Мова</system:String>
+</ResourceDictionary>

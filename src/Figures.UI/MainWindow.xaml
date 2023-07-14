@@ -16,23 +16,29 @@
         </Grid.ColumnDefinitions>
         
         <Border Grid.Column="0" Grid.ColumnSpan="2" Background="DodgerBlue">
-            <Label Content="Figures Movement" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Foreground="#fff"></Label>
+            <Label Content="{DynamicResource Header}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Foreground="#fff"></Label>
         </Border>
         
         <StackPanel Grid.Column="0" Grid.Row="1">
             <TreeView x:Name="FiguresThreeView">
-                <TextBox>Figures: </TextBox>
-                <TreeViewItem x:Name="CirclesTreeViewItem" Header="Circles" MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
+                <Label Content="{DynamicResource Figures}"></Label>
+                <TreeViewItem x:Name="CirclesTreeViewItem" Header="{DynamicResource Circles}" MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
                 </TreeViewItem>
             
-                <TreeViewItem x:Name="RectanglesTreeViewItem" Header="Rectangles" MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
+                <TreeViewItem x:Name="RectanglesTreeViewItem" Header="{DynamicResource Rectangles}" MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
                 </TreeViewItem>
             
-                <TreeViewItem x:Name="TrianglesTreeViewItem" Header="Triangles" MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
+                <TreeViewItem x:Name="TrianglesTreeViewItem" Header="{DynamicResource Triangles}" MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
                 </TreeViewItem>
             </TreeView>
-            
-            <Button x:Name="StopOrContinueButton" Content="Stop / Continue" Click="StopOrContinueButton_OnClick"></Button>
+
+            <Button x:Name="StopOrContinueButton" Content="{DynamicResource Stop}" Click="StopOrContinueButton_OnClick"></Button>
+            <Menu>
+                <MenuItem Header="{DynamicResource Language}">
+                    <MenuItem x:Name="EnglishMenuItem" Header="English" Click="ChangeLanguageMenuItem_OnClick" Tag="en-US"></MenuItem>
+                    <MenuItem x:Name="UkrainianMenuItem" Header="Ukrainian" Click="ChangeLanguageMenuItem_OnClick" Tag="uk-UA"></MenuItem>
+                </MenuItem>
+            </Menu>
         </StackPanel>
         
         <Canvas x:Name="MainCanvas" Grid.Row="1" Grid.Column="1" Focusable="True">

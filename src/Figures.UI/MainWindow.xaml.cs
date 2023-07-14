@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,11 +17,15 @@ namespace Figures.UI
         private readonly UiElementFactory _uiElementFactory = new();
         private readonly FiguresBuilder _figuresBuilder = new();
         private readonly ICollection<Figure> _figures = new List<Figure>();
+        private readonly LocalizationManager _localizationManager;
         private int _figureCounter;
         
         public MainWindow()
         {
             InitializeComponent();
+            
+            _localizationManager = new LocalizationManager(Resources);
+            _localizationManager.InitializeDefaultLanguage();
 
             _figureCounter = 0;
 
@@ -40,19 +46,6 @@ namespace Figures.UI
             MoveFigures(_figures, bottomRightPoint);
         }
 
-        private void MoveFigures(IEnumerable<Figure> figures, Point endPoint)
-        {
-            foreach (var figure in figures)
-            {
-                figure.Move(endPoint);
-                
-                var geometryFigure = figure.Draw();
-                
-                var uiElement = _uiElementFactory.Create(geometryFigure);
-                MainCanvas.Children.Add(uiElement);
-            }
-        }
-        
         private void TreeViewItem_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var child = sender as TreeViewItem;
@@ -66,10 +59,10 @@ namespace Figures.UI
                 "RectanglesTreeViewItem" => CreateRectangle,
                 "TrianglesTreeViewItem" => CreateTriable,
                 "CirclesTreeViewItem" => CreateCircle,
-                _ => throw new InvalidOperationException()
+                _ => throw new InvalidOperationException("Unknown figure type")
             };
 
-            CreateFigureAndToTreeView(creator, child);
+            CreateFigureAndAddToTreeView(creator, child);
         }
 
         private void RemoveTreeViewItem_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -90,8 +83,61 @@ namespace Figures.UI
             _figures.Remove(figure);
             parent.Items.Remove(child);
         }
+
+        private void TreeViewItem_OnSelected(object sender, RoutedEventArgs e)
+        {
+            var selectedTreeView = sender as TreeViewItem;
+            if(selectedTreeView is null)
+                return;
+            
+            var figure = selectedTreeView.Tag as Figure;
+            if(figure is null)
+                throw new InvalidOperationException();
+            
+            ChangeButtonContentBasedOnFigureStatus(StopOrContinueButton, figure.Stopped);
+        }
         
-        private void CreateFigureAndToTreeView(Func<Figure> creator, TreeViewItem treeViewItem)
+        private void StopOrContinueButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var selectedTreeView = FiguresThreeView.SelectedItem as TreeViewItem;
+            if(selectedTreeView is null)
+                return;
+            
+            var figure = selectedTreeView.Tag as Figure;
+            if (figure is null)
+                return;
+            
+            figure.Stopped = !figure.Stopped;
+            ChangeButtonContentBasedOnFigureStatus(StopOrContinueButton, figure.Stopped);
+        }
+        
+        private void ChangeLanguageMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            if(menuItem is null)
+                throw new InvalidOperationException();
+            
+            var language = menuItem.Tag as string;
+            if(language is null)
+                throw new InvalidOperationException();
+            
+            _localizationManager.SwitchLanguage(language);
+        }
+        
+        private void MoveFigures(IEnumerable<Figure> figures, Point endPoint)
+        {
+            foreach (var figure in figures)
+            {
+                figure.Move(endPoint);
+                
+                var geometryFigure = figure.Draw();
+                
+                var uiElement = _uiElementFactory.Create(geometryFigure);
+                MainCanvas.Children.Add(uiElement);
+            }
+        }
+        
+        private void CreateFigureAndAddToTreeView(Func<Figure> creator, TreeViewItem treeViewItem)
         {
             Figure figure = creator.Invoke();
             _figures.Add(figure);
@@ -108,42 +154,15 @@ namespace Figures.UI
             treeViewItem.Items.Add(child);
         }
 
-        private void TreeViewItem_OnSelected(object sender, RoutedEventArgs e)
-        {
-            var selectedTreeView = sender as TreeViewItem;
-            if(selectedTreeView is null)
-                return;
-            
-            var figure = selectedTreeView.Tag as Figure;
-            if(figure is null)
-                throw new InvalidOperationException();
-            
-            ChangeButtonContentBasedOnFigureStatus(StopOrContinueButton, figure.Stopped);
-        }
-
         private Figure CreateRectangle() => _figuresBuilder.BuildRectangle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
 
         private Figure CreateCircle() => _figuresBuilder.BuildCircle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
 
         private Figure CreateTriable() => _figuresBuilder.BuildTriangle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
 
-        private void StopOrContinueButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            var selectedTreeView = FiguresThreeView.SelectedItem as TreeViewItem;
-            if(selectedTreeView is null)
-                return;
-            
-            var figure = selectedTreeView.Tag as Figure;
-            if (figure is null)
-                return;
-            
-            figure.Stopped = !figure.Stopped;
-            ChangeButtonContentBasedOnFigureStatus(StopOrContinueButton, figure.Stopped);
-        }
-        
         private void ChangeButtonContentBasedOnFigureStatus(Button button, bool stopped)
         {
-            button.Content = stopped ? "Continue" : "Stop";
+            button.Content = _localizationManager.GetLocaleStringByKey(stopped ? "Continue" : "Stop");
         }
     }
 }
