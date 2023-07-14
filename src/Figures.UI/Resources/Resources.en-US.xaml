@@ -11,6 +11,7 @@
     
     <system:String x:Key="Stop">Stop</system:String>
     <system:String x:Key="Continue">Continue</system:String>
+    <system:String x:Key="StopOrContinue">Stop / Continue</system:String>
     
     <system:String x:Key="Language">Language</system:String>
 </ResourceDictionary>

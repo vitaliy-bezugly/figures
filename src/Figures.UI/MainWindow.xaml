@@ -32,7 +32,7 @@
                 </TreeViewItem>
             </TreeView>
 
-            <Button x:Name="StopOrContinueButton" Content="{DynamicResource Stop}" Click="StopOrContinueButton_OnClick"></Button>
+            <Button x:Name="StopOrContinueButton" Content="{DynamicResource StopOrContinue}" Click="StopOrContinueButton_OnClick"></Button>
             <Menu>
                 <MenuItem Header="{DynamicResource Language}">
                     <MenuItem x:Name="EnglishMenuItem" Header="English" Click="ChangeLanguageMenuItem_OnClick" Tag="en-US"></MenuItem>
