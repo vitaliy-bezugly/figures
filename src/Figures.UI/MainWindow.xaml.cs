@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -125,6 +126,43 @@ namespace Figures.UI
             _localizationManager.SwitchLanguage(language);
         }
         
+        private async void SaveFiguresButton_OnClick(object sender, RoutedEventArgs e) => await _repository.SaveManyAsync(_figures);
+        private async void LoadFiguresButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                await LoadFiguresAndAddToCollectionAsync();
+                MessageBox.Show("Figures loaded successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task LoadFiguresAndAddToCollectionAsync()
+        {
+            var loadedFigures = await _repository.GetAllAsync();
+
+            foreach (var figure in loadedFigures)
+            {
+                TreeViewItem threeView = GetTreeViewItemByObjectType(figure);
+                CreateFigureAndAddToTreeView(() => figure, threeView);
+            }
+        }
+
+        private TreeViewItem GetTreeViewItemByObjectType(Figure figure)
+        {
+            var threeView = figure.GetType() switch
+            {
+                { } type when type == typeof(Rectangle) => RectanglesTreeViewItem,
+                { } type when type == typeof(Triangle) => TrianglesTreeViewItem,
+                { } type when type == typeof(Circle) => CirclesTreeViewItem,
+                _ => throw new InvalidOperationException("Unknown figure type")
+            };
+            return threeView;
+        }
+
         private void MoveFigures(IEnumerable<Figure> figures, Point endPoint)
         {
             foreach (var figure in figures)
@@ -164,38 +202,6 @@ namespace Figures.UI
         private void ChangeButtonContentBasedOnFigureStatus(Button button, bool stopped)
         {
             button.Content = _localizationManager.GetLocaleStringByKey(stopped ? "Continue" : "Stop");
-        }
-
-        private async void SaveFiguresButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            await _repository.SaveManyAsync(_figures);
-        }
-
-        private async void LoadFiguresButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var loadedFigures = await _repository.GetAllAsync();
-                
-                foreach (var figure in loadedFigures)
-                {
-                    var threeView = figure.GetType() switch
-                    {
-                        { } type when type == typeof(Rectangle) => RectanglesTreeViewItem,
-                        { } type when type == typeof(Triangle) => TrianglesTreeViewItem,
-                        { } type when type == typeof(Circle) => CirclesTreeViewItem,
-                        _ => throw new InvalidOperationException("Unknown figure type")
-                    };
-                    
-                    CreateFigureAndAddToTreeView(() => figure, threeView);
-                }
-                
-                MessageBox.Show("Figures loaded");
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
         }
     }
 }
