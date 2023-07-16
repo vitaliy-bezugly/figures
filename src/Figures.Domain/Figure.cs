@@ -2,6 +2,7 @@ using System.Drawing;
 
 namespace Figures.Domain;
 
+[Serializable]
 public abstract class Figure
 {
     protected Figure(Point centralPoint, int dX, int dY)

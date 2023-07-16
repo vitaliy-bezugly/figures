@@ -2,6 +2,7 @@ using System.Drawing;
 
 namespace Figures.Domain;
 
+[Serializable]
 public class Circle : Figure
 {
     public Circle(Point centralPoint, int dX, int dY, int radius) : base(centralPoint, dX, dY)

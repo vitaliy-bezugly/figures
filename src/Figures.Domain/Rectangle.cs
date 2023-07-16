@@ -2,6 +2,7 @@ using System.Drawing;
 
 namespace Figures.Domain;
 
+[Serializable]
 public class Rectangle : Figure
 {
     public Rectangle(Point centralPoint, int dX, int dY, int width, int height) : base(centralPoint, dX, dY)

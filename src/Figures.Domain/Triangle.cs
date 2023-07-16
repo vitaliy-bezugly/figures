@@ -2,6 +2,7 @@ using System.Drawing;
 
 namespace Figures.Domain;
 
+[Serializable]
 public class Triangle : Figure
 {
     public Triangle(Point centralPoint, int dX, int dY, int edgeLength) : base(centralPoint, dX, dY)

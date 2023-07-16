@@ -18,12 +18,6 @@ public class JsonRepository<T> : IRepository<T> where T : class
         return figures;
     }
 
-    public virtual async Task SaveAsync(T entity)
-    {
-        var json = SerializeFigures(new []{entity});
-        await File.WriteAllTextAsync(_path, json);
-    }
-
     public virtual async Task SaveManyAsync(IEnumerable<T> entities)
     {
         var json = SerializeFigures(entities);
@@ -47,8 +41,10 @@ public class JsonRepository<T> : IRepository<T> where T : class
         {
             TypeNameHandling = TypeNameHandling.Auto
         };
+        
         var jArray = JArray.Parse(json);
         var figures = new List<T>();
+        
         foreach (var jToken in jArray)
         {
             var typeName = jToken.Value<string>("$type");

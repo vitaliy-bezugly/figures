@@ -29,7 +29,7 @@ namespace Figures.UI
             _localizationManager.InitializeDefaultLanguage();
 
             _figureCounter = 0;
-            _repository = new JsonRepository<Figure>();
+            _repository = new BinaryRepository<Figure>();
 
             _timer.Tick += TimerOnTick;
             _timer.Interval = TimeSpan.FromMilliseconds(50);
