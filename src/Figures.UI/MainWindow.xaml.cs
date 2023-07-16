@@ -127,6 +127,7 @@ namespace Figures.UI
         }
         
         private async void SaveFiguresButton_OnClick(object sender, RoutedEventArgs e) => await _repository.SaveManyAsync(_figures);
+        
         private async void LoadFiguresButton_OnClick(object sender, RoutedEventArgs e)
         {
             try
