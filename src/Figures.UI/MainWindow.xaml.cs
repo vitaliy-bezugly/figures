@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Figures.Domain;
+using Figures.Infrastructure;
 using Point = System.Drawing.Point;
 
 namespace Figures.UI
@@ -18,6 +17,7 @@ namespace Figures.UI
         private readonly FiguresBuilder _figuresBuilder = new();
         private readonly ICollection<Figure> _figures = new List<Figure>();
         private readonly LocalizationManager _localizationManager;
+        private readonly IRepository<Figure> _repository;
         private int _figureCounter;
         
         public MainWindow()
@@ -28,6 +28,7 @@ namespace Figures.UI
             _localizationManager.InitializeDefaultLanguage();
 
             _figureCounter = 0;
+            _repository = new JsonRepository<Figure>();
 
             _timer.Tick += TimerOnTick;
             _timer.Interval = TimeSpan.FromMilliseconds(50);
@@ -163,6 +164,38 @@ namespace Figures.UI
         private void ChangeButtonContentBasedOnFigureStatus(Button button, bool stopped)
         {
             button.Content = _localizationManager.GetLocaleStringByKey(stopped ? "Continue" : "Stop");
+        }
+
+        private async void SaveFiguresButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            await _repository.SaveManyAsync(_figures);
+        }
+
+        private async void LoadFiguresButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var loadedFigures = await _repository.GetAllAsync();
+                
+                foreach (var figure in loadedFigures)
+                {
+                    var threeView = figure.GetType() switch
+                    {
+                        { } type when type == typeof(Rectangle) => RectanglesTreeViewItem,
+                        { } type when type == typeof(Triangle) => TrianglesTreeViewItem,
+                        { } type when type == typeof(Circle) => CirclesTreeViewItem,
+                        _ => throw new InvalidOperationException("Unknown figure type")
+                    };
+                    
+                    CreateFigureAndAddToTreeView(() => figure, threeView);
+                }
+                
+                MessageBox.Show("Figures loaded");
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

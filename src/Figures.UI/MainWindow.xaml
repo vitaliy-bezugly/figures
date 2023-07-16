@@ -39,6 +39,8 @@
                     <MenuItem x:Name="UkrainianMenuItem" Header="Ukrainian" Click="ChangeLanguageMenuItem_OnClick" Tag="uk-UA"></MenuItem>
                 </MenuItem>
             </Menu>
+            <Button x:Name="SaveFiguresButton" Content="Save" Click="SaveFiguresButton_OnClick"></Button>
+            <Button x:Name="LoadFiguresButton" Content="Load" Click="LoadFiguresButton_OnClick"></Button>
         </StackPanel>
         
         <Canvas x:Name="MainCanvas" Grid.Row="1" Grid.Column="1" Focusable="True">

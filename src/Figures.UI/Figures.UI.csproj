@@ -13,6 +13,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Figures.Domain\Figures.Domain.csproj" />
+      <ProjectReference Include="..\Figures.Infrastructure\Figures.Infrastructure.csproj" />
+      <ProjectReference Include="..\Figures.SpawnRandomizer\Figures.SpawnRandomizer.csproj" />
     </ItemGroup>
 
     <ItemGroup>
