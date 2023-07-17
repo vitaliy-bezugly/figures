@@ -6,7 +6,7 @@ namespace Figures.Infrastructure;
 
 public class JsonFileRepository : FileRepositoryBase
 {
-    public JsonFileRepository() : base("json")
+    public JsonFileRepository(string filePath) : base(filePath)
     { }
     
     protected override async Task SaveInPersistenceStorageAsync(FileStream stream, IEnumerable<Figure> figures)

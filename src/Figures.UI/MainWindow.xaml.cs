@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Figures.Domain;
 using Figures.Infrastructure;
+using Microsoft.Win32;
 using Point = System.Drawing.Point;
 
 namespace Figures.UI
@@ -18,18 +20,16 @@ namespace Figures.UI
         private readonly FiguresBuilder _figuresBuilder = new();
         private readonly ICollection<Figure> _figures = new List<Figure>();
         private readonly LocalizationManager _localizationManager;
-        private IRepository<Figure> _repository;
         private int _figureCounter;
-        
+
         public MainWindow()
         {
             InitializeComponent();
-            
+
             _localizationManager = new LocalizationManager(Resources);
             _localizationManager.InitializeDefaultLanguage();
 
             _figureCounter = 0;
-            _repository = new JsonFileRepository();
 
             _timer.Tick += TimerOnTick;
             _timer.Interval = TimeSpan.FromMilliseconds(50);
@@ -39,12 +39,12 @@ namespace Figures.UI
         private void TimerOnTick(object? sender, EventArgs e)
         {
             var bottomRightPoint = new Point(((int)MainCanvas.ActualWidth), ((int)MainCanvas.ActualHeight));
-            
+
             MainCanvas.Children.Clear();
-            
+
             if (_figures.Count == 0)
                 return;
-            
+
             MoveFigures(_figures, bottomRightPoint);
         }
 
@@ -89,61 +89,93 @@ namespace Figures.UI
         private void TreeViewItem_OnSelected(object sender, RoutedEventArgs e)
         {
             var selectedTreeView = sender as TreeViewItem;
-            if(selectedTreeView is null)
+            if (selectedTreeView is null)
                 return;
-            
+
             var figure = selectedTreeView.Tag as Figure;
-            if(figure is null)
+            if (figure is null)
                 throw new InvalidOperationException();
-            
+
             ChangeButtonContentBasedOnFigureStatus(StopOrContinueButton, figure.Stopped);
         }
-        
+
         private void StopOrContinueButton_OnClick(object sender, RoutedEventArgs e)
         {
             var selectedTreeView = FiguresThreeView.SelectedItem as TreeViewItem;
-            if(selectedTreeView is null)
+            if (selectedTreeView is null)
                 return;
-            
+
             var figure = selectedTreeView.Tag as Figure;
             if (figure is null)
                 return;
-            
+
             figure.Stopped = !figure.Stopped;
             ChangeButtonContentBasedOnFigureStatus(StopOrContinueButton, figure.Stopped);
         }
-        
+
         private void ChangeLanguageMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
-            if(menuItem is null)
+            if (menuItem is null)
                 throw new InvalidOperationException();
-            
+
             var language = menuItem.Tag as string;
-            if(language is null)
+            if (language is null)
                 throw new InvalidOperationException();
-            
+
             _localizationManager.SwitchLanguage(language);
         }
-        
-        private async void SaveFiguresButton_OnClick(object sender, RoutedEventArgs e) => await _repository.SaveManyAsync(_figures);
-        
-        private async void LoadFiguresButton_OnClick(object sender, RoutedEventArgs e)
+
+        private async void SaveFiguresButton_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                await LoadFiguresAndAddToCollectionAsync();
-                MessageBox.Show("Figures loaded successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                IRepository<Figure> repository = ShowFileDialogAndGetSpecificRepo();
+                await repository.SaveManyAsync(_figures);
             }
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        
-        private void JsonPickerMenuItem_OnClick(object sender, RoutedEventArgs e) => _repository = new JsonFileRepository();
-        private void XmlPickerMenuItem_OnClick(object sender, RoutedEventArgs e) => _repository = new XmlFileRepository();
-        private void BinaryPickerMenuItem_OnClick(object sender, RoutedEventArgs e) => _repository = new BinaryFileRepository();
+
+        private async void LoadFiguresButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var repository = ShowFileDialogAndGetSpecificRepo();
+                await LoadFiguresAndAddToCollectionAsync(repository);
+
+                MessageBox.Show("Figures loaded successfully", "Success", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private IRepository<Figure> ShowFileDialogAndGetSpecificRepo()
+        {
+            var fileDialog = new OpenFileDialog
+            {
+                Filter = "Json files (*.json)|*.json|Xml files (*.xml)|*.xml|Binary files (*.bin)|*.bin",
+                InitialDirectory = Environment.CurrentDirectory
+            };
+
+            fileDialog.ShowDialog();
+            if (string.IsNullOrEmpty(fileDialog.FileName))
+                throw new InvalidOperationException("File not selected");
+
+            var resolution = fileDialog.FileName.Split('.').Last();
+            return resolution switch
+            {
+                "json" => new JsonFileRepository(fileDialog.FileName),
+                "xml" => new XmlFileRepository(fileDialog.FileName),
+                "bin" => new BinaryFileRepository(fileDialog.FileName),
+                _ => throw new InvalidOperationException("Unknown file type")
+            };
+        }
 
         private void ClearFiguresButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -151,9 +183,9 @@ namespace Figures.UI
             ClearTreeViewItemsFromFigures();
         }
 
-        private async Task LoadFiguresAndAddToCollectionAsync()
+        private async Task LoadFiguresAndAddToCollectionAsync(IRepository<Figure> repository)
         {
-            var loadedFigures = await _repository.GetAllAsync();
+            var loadedFigures = await repository.GetAllAsync();
 
             foreach (var figure in loadedFigures)
             {
@@ -179,19 +211,19 @@ namespace Figures.UI
             foreach (var figure in figures)
             {
                 figure.Move(endPoint);
-                
+
                 var geometryFigure = figure.Draw();
-                
+
                 var uiElement = _uiElementFactory.Create(geometryFigure);
                 MainCanvas.Children.Add(uiElement);
             }
         }
-        
+
         private void CreateFigureAndAddToTreeView(Func<Figure> creator, TreeViewItem treeViewItem)
         {
             Figure figure = creator.Invoke();
             _figures.Add(figure);
-            
+
             var child = new TreeViewItem
             {
                 Header = "Figure #" + _figureCounter++,
@@ -200,15 +232,18 @@ namespace Figures.UI
 
             child.MouseRightButtonUp += RemoveTreeViewItem_OnMouseRightButtonUp;
             child.Selected += TreeViewItem_OnSelected;
-            
+
             treeViewItem.Items.Add(child);
         }
 
-        private Figure CreateRectangle() => _figuresBuilder.BuildRectangle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
+        private Figure CreateRectangle() =>
+            _figuresBuilder.BuildRectangle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
 
-        private Figure CreateCircle() => _figuresBuilder.BuildCircle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
+        private Figure CreateCircle() =>
+            _figuresBuilder.BuildCircle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
 
-        private Figure CreateTriable() => _figuresBuilder.BuildTriangle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
+        private Figure CreateTriable() =>
+            _figuresBuilder.BuildTriangle(new Point((int)MainCanvas.ActualWidth, (int)MainCanvas.ActualHeight));
 
         private void ChangeButtonContentBasedOnFigureStatus(Button button, bool stopped)
         {

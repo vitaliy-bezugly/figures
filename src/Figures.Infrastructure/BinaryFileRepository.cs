@@ -6,7 +6,7 @@ namespace Figures.Infrastructure;
 
 public class BinaryFileRepository : FileRepositoryBase
 {
-    public BinaryFileRepository() : base("bin")
+    public BinaryFileRepository(string filePath) : base(filePath)
     { }
 
     protected override Task SaveInPersistenceStorageAsync(FileStream stream, IEnumerable<Figure> figures)

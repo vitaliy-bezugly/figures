@@ -5,7 +5,7 @@ namespace Figures.Infrastructure;
 
 public class XmlFileRepository : FileRepositoryBase
 {
-    public XmlFileRepository() : base("xml")
+    public XmlFileRepository(string filePath) : base(filePath)
     { }
     
     protected override Task SaveInPersistenceStorageAsync(FileStream stream, IEnumerable<Figure> figures)

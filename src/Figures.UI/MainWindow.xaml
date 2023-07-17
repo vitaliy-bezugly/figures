@@ -40,22 +40,10 @@
                 </MenuItem>
             </Menu>
             
-            <ComboBox>
-                <ComboBoxItem x:Name="JsonPickerComboBoxItem" Selected="JsonPickerMenuItem_OnClick" IsSelected="True">
-                    Json
-                </ComboBoxItem>
-                <ComboBoxItem x:Name="XmlPickerComboBoxItem" Selected="XmlPickerMenuItem_OnClick">
-                    Xml
-                </ComboBoxItem>
-                <ComboBoxItem x:Name="BinaryPickerComboBoxItem" Selected="BinaryPickerMenuItem_OnClick">
-                    Bin
-                </ComboBoxItem>
-            </ComboBox>
-            
-            <Button x:Name="SaveFiguresButton" Content="{DynamicResource Save}" Click="SaveFiguresButton_OnClick"></Button>
-            <Button x:Name="LoadFiguresButton" Content="{DynamicResource Load}" Click="LoadFiguresButton_OnClick"></Button>
-            
-            <Separator></Separator>
+            <StackPanel Margin="0 10">
+                <Button x:Name="SaveFiguresButton" Content="{DynamicResource Save}" Click="SaveFiguresButton_OnClick"></Button>
+                <Button x:Name="LoadFiguresButton" Content="{DynamicResource Load}" Click="LoadFiguresButton_OnClick"></Button>
+            </StackPanel>
             
             <Button x:Name="ClearFiguresButton" Content="{DynamicResource Clear}" Click="ClearFiguresButton_OnClick"></Button>
         </StackPanel>
