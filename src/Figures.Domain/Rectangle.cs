@@ -5,6 +5,12 @@ namespace Figures.Domain;
 [Serializable]
 public class Rectangle : Figure
 {
+    public Rectangle() : base()
+    {
+        Width = 0;
+        Height = 0;
+    }
+
     public Rectangle(Point centralPoint, int dX, int dY, int width, int height) : base(centralPoint, dX, dY)
     {
         Width = width;

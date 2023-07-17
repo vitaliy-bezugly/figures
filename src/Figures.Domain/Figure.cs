@@ -1,10 +1,20 @@
 using System.Drawing;
+using System.Xml.Serialization;
 
 namespace Figures.Domain;
 
 [Serializable]
+[XmlInclude(typeof(Circle))]
+[XmlInclude(typeof(Rectangle))]
+[XmlInclude(typeof(Triangle))]
 public abstract class Figure
 {
+    public Figure()
+    {
+        CentralPoint = new Point(0, 0);
+        Speed = new Point(0, 0);
+    }
+
     protected Figure(Point centralPoint, int dX, int dY)
     {
         CentralPoint = centralPoint;

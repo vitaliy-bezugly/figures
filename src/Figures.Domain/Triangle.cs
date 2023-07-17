@@ -5,6 +5,11 @@ namespace Figures.Domain;
 [Serializable]
 public class Triangle : Figure
 {
+    public Triangle() : base()
+    {
+        EdgeLength = 0;
+    }
+    
     public Triangle(Point centralPoint, int dX, int dY, int edgeLength) : base(centralPoint, dX, dY)
     {
         EdgeLength = edgeLength;
