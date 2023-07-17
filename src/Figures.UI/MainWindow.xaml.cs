@@ -18,7 +18,7 @@ namespace Figures.UI
         private readonly FiguresBuilder _figuresBuilder = new();
         private readonly ICollection<Figure> _figures = new List<Figure>();
         private readonly LocalizationManager _localizationManager;
-        private readonly IRepository<Figure> _repository;
+        private IRepository<Figure> _repository;
         private int _figureCounter;
         
         public MainWindow()
@@ -140,6 +140,16 @@ namespace Figures.UI
                 MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        
+        private void JsonPickerMenuItem_OnClick(object sender, RoutedEventArgs e) => _repository = new JsonFileRepository();
+        private void XmlPickerMenuItem_OnClick(object sender, RoutedEventArgs e) => _repository = new XmlFileRepository();
+        private void BinaryPickerMenuItem_OnClick(object sender, RoutedEventArgs e) => _repository = new BinaryFileRepository();
+
+        private void ClearFiguresButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _figures.Clear();
+            ClearTreeViewItemsFromFigures();
+        }
 
         private async Task LoadFiguresAndAddToCollectionAsync()
         {
@@ -203,6 +213,13 @@ namespace Figures.UI
         private void ChangeButtonContentBasedOnFigureStatus(Button button, bool stopped)
         {
             button.Content = _localizationManager.GetLocaleStringByKey(stopped ? "Continue" : "Stop");
+        }
+
+        private void ClearTreeViewItemsFromFigures()
+        {
+            RectanglesTreeViewItem.Items.Clear();
+            TrianglesTreeViewItem.Items.Clear();
+            CirclesTreeViewItem.Items.Clear();
         }
     }
 }

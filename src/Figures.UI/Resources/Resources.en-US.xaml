@@ -13,5 +13,12 @@
     <system:String x:Key="Continue">Continue</system:String>
     <system:String x:Key="StopOrContinue">Stop / Continue</system:String>
     
+    <system:String x:Key="ResolutionPicker">Pick format to file save</system:String>
+    
+    <system:String x:Key="Save">Save</system:String>
+    <system:String x:Key="Load">Load</system:String>
+    
+    <system:String x:Key="Clear">Clear</system:String>
+    
     <system:String x:Key="Language">Language</system:String>
 </ResourceDictionary>

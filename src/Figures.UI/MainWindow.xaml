@@ -39,8 +39,25 @@
                     <MenuItem x:Name="UkrainianMenuItem" Header="Ukrainian" Click="ChangeLanguageMenuItem_OnClick" Tag="uk-UA"></MenuItem>
                 </MenuItem>
             </Menu>
-            <Button x:Name="SaveFiguresButton" Content="Save" Click="SaveFiguresButton_OnClick"></Button>
-            <Button x:Name="LoadFiguresButton" Content="Load" Click="LoadFiguresButton_OnClick"></Button>
+            
+            <ComboBox>
+                <ComboBoxItem x:Name="JsonPickerComboBoxItem" Selected="JsonPickerMenuItem_OnClick" IsSelected="True">
+                    Json
+                </ComboBoxItem>
+                <ComboBoxItem x:Name="XmlPickerComboBoxItem" Selected="XmlPickerMenuItem_OnClick">
+                    Xml
+                </ComboBoxItem>
+                <ComboBoxItem x:Name="BinaryPickerComboBoxItem" Selected="BinaryPickerMenuItem_OnClick">
+                    Bin
+                </ComboBoxItem>
+            </ComboBox>
+            
+            <Button x:Name="SaveFiguresButton" Content="{DynamicResource Save}" Click="SaveFiguresButton_OnClick"></Button>
+            <Button x:Name="LoadFiguresButton" Content="{DynamicResource Load}" Click="LoadFiguresButton_OnClick"></Button>
+            
+            <Separator></Separator>
+            
+            <Button x:Name="ClearFiguresButton" Content="{DynamicResource Clear}" Click="ClearFiguresButton_OnClick"></Button>
         </StackPanel>
         
         <Canvas x:Name="MainCanvas" Grid.Row="1" Grid.Column="1" Focusable="True">

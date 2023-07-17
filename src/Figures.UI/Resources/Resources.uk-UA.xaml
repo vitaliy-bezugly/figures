@@ -13,5 +13,12 @@
     <system:String x:Key="Continue">Продовжити</system:String>
     <system:String x:Key="StopOrContinue">Зупинитись / Продовжити</system:String>
     
+    <system:String x:Key="ResolutionPicker">Оберіть формат для зберігання даних</system:String>
+    
+    <system:String x:Key="Save">Зберегти</system:String>
+    <system:String x:Key="Load">Завантажити</system:String>
+    
+    <system:String x:Key="Clear">Очистити</system:String>
+    
     <system:String x:Key="Language">Мова</system:String>
 </ResourceDictionary>

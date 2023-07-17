@@ -16,13 +16,13 @@ public abstract class FileRepositoryBase : IRepository<Figure>
         if(File.Exists(_filePath) == false)
             return Array.Empty<Figure>();
 
-        await using var stream = File.OpenRead(_filePath);
+        await using FileStream stream = File.OpenRead(_filePath);
         return await GetFromPersistenceStorageAsync(stream);
     }
 
     public async Task SaveManyAsync(IEnumerable<Figure> entities)
     {
-        await using var stream = File.OpenWrite(_filePath);
+        await using FileStream stream = File.OpenWrite(_filePath);
         await SaveInPersistenceStorageAsync(stream, entities);
     }
     
