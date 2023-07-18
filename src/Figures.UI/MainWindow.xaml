@@ -7,52 +7,78 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.15*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.1*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.25*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.25*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
-        <Border Grid.Column="0" Grid.ColumnSpan="2" Background="DodgerBlue">
-            <Label Content="{DynamicResource Header}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Foreground="#fff"></Label>
-        </Border>
-        
-        <StackPanel Grid.Column="0" Grid.Row="1">
-            <TreeView x:Name="FiguresThreeView">
-                <Label Content="{DynamicResource Figures}"></Label>
-                <TreeViewItem x:Name="CirclesTreeViewItem" Header="{DynamicResource Circles}" MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
-                </TreeViewItem>
-            
-                <TreeViewItem x:Name="RectanglesTreeViewItem" Header="{DynamicResource Rectangles}" MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
-                </TreeViewItem>
-            
-                <TreeViewItem x:Name="TrianglesTreeViewItem" Header="{DynamicResource Triangles}" MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
-                </TreeViewItem>
-            </TreeView>
 
-            <Button x:Name="StopOrContinueButton" Content="{DynamicResource StopOrContinue}" Click="StopOrContinueButton_OnClick"></Button>
-            <Menu>
-                <MenuItem Header="{DynamicResource Language}">
-                    <MenuItem x:Name="EnglishMenuItem" Header="English" Click="ChangeLanguageMenuItem_OnClick" Tag="en-US"></MenuItem>
-                    <MenuItem x:Name="UkrainianMenuItem" Header="Ukrainian" Click="ChangeLanguageMenuItem_OnClick" Tag="uk-UA"></MenuItem>
-                </MenuItem>
-            </Menu>
-            
-            <StackPanel Margin="0 10">
-                <Button x:Name="SaveFiguresButton" Content="{DynamicResource Save}" Click="SaveFiguresButton_OnClick"></Button>
-                <Button x:Name="LoadFiguresButton" Content="{DynamicResource Load}" Click="LoadFiguresButton_OnClick"></Button>
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="DodgerBlue">
+            <Label Content="{DynamicResource Header}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   FontSize="20" Foreground="#fff">
+            </Label>
+        </Border>
+
+        <ScrollViewer Grid.Column="0" Grid.Row="1">
+            <StackPanel>
+                <Menu>
+                    <MenuItem Header="{DynamicResource Language}">
+                        <MenuItem x:Name="EnglishMenuItem" Header="English" Click="ChangeLanguageMenuItem_OnClick"
+                                  Tag="en-US">
+                        </MenuItem>
+                        <MenuItem x:Name="UkrainianMenuItem" Header="Ukrainian" Click="ChangeLanguageMenuItem_OnClick"
+                                  Tag="uk-UA">
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
+                
+                <TreeView x:Name="FiguresThreeView">
+                    <Label Content="{DynamicResource Figures}"></Label>
+                    <TreeViewItem x:Name="CirclesTreeViewItem" Header="{DynamicResource Circles}"
+                                  MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
+                    </TreeViewItem>
+
+                    <TreeViewItem x:Name="RectanglesTreeViewItem" Header="{DynamicResource Rectangles}"
+                                  MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
+                    </TreeViewItem>
+
+                    <TreeViewItem x:Name="TrianglesTreeViewItem" Header="{DynamicResource Triangles}"
+                                  MouseDoubleClick="TreeViewItem_OnMouseDoubleClick">
+                    </TreeViewItem>
+                </TreeView>
+                
+                <Button x:Name="StopOrContinueButton" Content="{DynamicResource StopOrContinue}"
+                        Click="StopOrContinueButton_OnClick" Style="{StaticResource CustomButton}"></Button>
+                
+                <Separator Height="0.8" Margin="10 5" Background="#46558a" />
+
+                <Button x:Name="SaveFiguresButton" Content="{DynamicResource Save}" Margin="10 5 10 0"
+                        Click="SaveFiguresButton_OnClick" Style="{StaticResource CustomButton}">
+                </Button>
+                <Button x:Name="LoadFiguresButton" Content="{DynamicResource Load}" Margin="10 5"
+                        Click="LoadFiguresButton_OnClick" Style="{StaticResource CustomButton}">
+                </Button>
+                
+                <Separator Height="0.8" Margin="10 5" Background="#46558a" />
+
+                <Button x:Name="AddSubscriberToFigureEventButton" Content="+"
+                        Click="AddSubscriberToFigureEventButton_OnClick" Margin="10 5"
+                        Style="{StaticResource CustomButton}"></Button>
+                
+                <Button x:Name="RemoveSubscriberFromFigureEventButton" Content="-"
+                        Click="RemoveSubscriberFromFigureEventButton_OnClick" Margin="10 5"
+                        Style="{StaticResource CustomButton}"></Button>
+                
+                <Separator Height="0.8" Margin="10 5" Background="#46558a" />
+
+                <Button x:Name="ClearFiguresButton" Content="{DynamicResource Clear}" Margin="10 5"
+                        Click="ClearFiguresButton_OnClick" Style="{StaticResource CustomButton}">
+                </Button>
             </StackPanel>
-            
-            <StackPanel Margin="0 10">
-                <Button x:Name="AddSubscriberToFigureEventButton" Content="+" Click="AddSubscriberToFigureEventButton_OnClick"></Button>
-                <Button x:Name="RemoveSubscriberFromFigureEventButton" Content="-" Click="RemoveSubscriberFromFigureEventButton_OnClick"></Button>
-            </StackPanel>
-            
-            <Button x:Name="ClearFiguresButton" Content="{DynamicResource Clear}" Click="ClearFiguresButton_OnClick"></Button>
-        </StackPanel>
-        
+        </ScrollViewer>
+
         <Canvas x:Name="MainCanvas" Grid.Row="1" Grid.Column="1" Focusable="True">
         </Canvas>
     </Grid>
