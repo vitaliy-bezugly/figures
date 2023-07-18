@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Media;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -108,10 +110,6 @@ namespace Figures.UI
 
                 figure.Stopped = !figure.Stopped;
                 ChangeButtonContentBasedOnFigureStatus(StopOrContinueButton, figure.Stopped);
-            }
-            catch (InvalidOperationException exception)
-            {
-                // figure not selected - do nothing
             }
             catch (Exception exception)
             {
@@ -275,10 +273,6 @@ namespace Figures.UI
                 Figure figure = GetSelectedFigure();
                 figure.Intersection += FigureOnIntersection;
             }
-            catch(InvalidOperationException exception)
-            {
-                // figure not selected - do nothing
-            }
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
@@ -293,10 +287,6 @@ namespace Figures.UI
                 Figure figure = GetSelectedFigure();
                 figure.Intersection -= FigureOnIntersection;
             }
-            catch(InvalidOperationException exception)
-            {
-                // figure not selected - do nothing
-            }
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
@@ -307,13 +297,13 @@ namespace Figures.UI
         private Figure GetSelectedFigure()
         {
             var selectedTreeView = FiguresThreeView.SelectedItem as TreeViewItem;
-            return selectedTreeView?.Tag as Figure ?? throw new InvalidOperationException();
+            return selectedTreeView?.Tag as Figure ?? new FigureNullObject();
         }
         
         private void FigureOnIntersection(object? sender, IntersectionEventArgs e)
         {
-            MessageBox.Show("Intersection detected", "Intersection", MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            SystemSounds.Beep.Play();
+            Trace.WriteLine("Intersection detected. Intersection point: " + e.IntersectionPoint);
         }
     }
 }

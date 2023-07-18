@@ -14,7 +14,7 @@ public class SpawnRandomizer
     
     public Point GetRandomPoint(int width, int height)
     {
-        return new Point(_random.Next(0, _bottomRightPoint.X - width), _random.Next(0, _bottomRightPoint.Y - height));
+        return new Point(_random.Next(0, _bottomRightPoint.X - width * 2), _random.Next(0, _bottomRightPoint.Y - height * 2));
     }
     
     public static SpawnRandomizer CreateBasedOnBottomRightPoint(Point bottomRightPoint)
