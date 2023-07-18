@@ -159,6 +159,40 @@ namespace Figures.UI
                 MessageBox.Show(exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        
+        private void AddSubscriberToFigureEventButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Figure figure = GetSelectedFigure();
+                figure.Intersection += FigureOnIntersection;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
+        }
+
+        private void RemoveSubscriberFromFigureEventButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Figure figure = GetSelectedFigure();
+                figure.Intersection -= FigureOnIntersection;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
+        }
+        
+        private void ClearFiguresButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _figures.Clear();
+            ClearTreeViewItemsFromFigures();
+        }
 
         private IRepository<Figure> ShowFileDialogAndGetSpecificRepo()
         {
@@ -180,12 +214,6 @@ namespace Figures.UI
                 "bin" => new BinaryFileRepository(fileDialog.FileName),
                 _ => throw new InvalidOperationException("Unknown file type")
             };
-        }
-
-        private void ClearFiguresButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            _figures.Clear();
-            ClearTreeViewItemsFromFigures();
         }
 
         private async Task LoadFiguresAndAddToCollectionAsync(IRepository<Figure> repository)
@@ -266,34 +294,6 @@ namespace Figures.UI
             CirclesTreeViewItem.Items.Clear();
         }
 
-        private void AddSubscriberToFigureEventButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Figure figure = GetSelectedFigure();
-                figure.Intersection += FigureOnIntersection;
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-                throw;
-            }
-        }
-
-        private void RemoveSubscriberFromFigureEventButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Figure figure = GetSelectedFigure();
-                figure.Intersection -= FigureOnIntersection;
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-                throw;
-            }
-        }
-        
         private Figure GetSelectedFigure()
         {
             var selectedTreeView = FiguresThreeView.SelectedItem as TreeViewItem;
