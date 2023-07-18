@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Figures.Domain;
+using Figures.Domain.Args;
 using Figures.Infrastructure;
 using Microsoft.Win32;
 using Point = System.Drawing.Point;
@@ -101,16 +102,22 @@ namespace Figures.UI
 
         private void StopOrContinueButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var selectedTreeView = FiguresThreeView.SelectedItem as TreeViewItem;
-            if (selectedTreeView is null)
-                return;
+            try
+            {
+                var figure = GetSelectedFigure();
 
-            var figure = selectedTreeView.Tag as Figure;
-            if (figure is null)
-                return;
-
-            figure.Stopped = !figure.Stopped;
-            ChangeButtonContentBasedOnFigureStatus(StopOrContinueButton, figure.Stopped);
+                figure.Stopped = !figure.Stopped;
+                ChangeButtonContentBasedOnFigureStatus(StopOrContinueButton, figure.Stopped);
+            }
+            catch (InvalidOperationException exception)
+            {
+                // figure not selected - do nothing
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
         }
 
         private void ChangeLanguageMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -208,11 +215,15 @@ namespace Figures.UI
 
         private void MoveFigures(IEnumerable<Figure> figures, Point endPoint)
         {
-            foreach (var figure in figures)
+            var enumerable = figures as Figure[] ?? figures.ToArray();
+            
+            foreach (var figure in enumerable)
             {
                 figure.Move(endPoint);
 
                 var geometryFigure = figure.Draw();
+
+                figure.CheckIntersections(enumerable);
 
                 var uiElement = _uiElementFactory.Create(geometryFigure);
                 MainCanvas.Children.Add(uiElement);
@@ -255,6 +266,54 @@ namespace Figures.UI
             RectanglesTreeViewItem.Items.Clear();
             TrianglesTreeViewItem.Items.Clear();
             CirclesTreeViewItem.Items.Clear();
+        }
+
+        private void AddSubscriberToFigureEventButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Figure figure = GetSelectedFigure();
+                figure.Intersection += FigureOnIntersection;
+            }
+            catch(InvalidOperationException exception)
+            {
+                // figure not selected - do nothing
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
+        }
+
+        private void RemoveSubscriberFromFigureEventButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Figure figure = GetSelectedFigure();
+                figure.Intersection -= FigureOnIntersection;
+            }
+            catch(InvalidOperationException exception)
+            {
+                // figure not selected - do nothing
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
+        }
+        
+        private Figure GetSelectedFigure()
+        {
+            var selectedTreeView = FiguresThreeView.SelectedItem as TreeViewItem;
+            return selectedTreeView?.Tag as Figure ?? throw new InvalidOperationException();
+        }
+        
+        private void FigureOnIntersection(object? sender, IntersectionEventArgs e)
+        {
+            MessageBox.Show("Intersection detected", "Intersection", MessageBoxButton.OK,
+                MessageBoxImage.Information);
         }
     }
 }

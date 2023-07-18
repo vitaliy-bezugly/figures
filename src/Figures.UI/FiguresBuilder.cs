@@ -34,7 +34,9 @@ public class FiguresBuilder
         Point spawnPoint = GetSpawnCoordinate(rightBottomPoint);
         var (dx, dy) = GetDxAndDy();
         
-        return new Triangle(spawnPoint, dx, dy, edgeLength);
+        var triangle = new Triangle(spawnPoint, dx, dy, edgeLength);
+        
+        return triangle;
     }
     
     private Point GetSpawnCoordinate(Point rightBottomPoint) => SpawnRandomizer.SpawnRandomizer.CreateBasedOnBottomRightPoint(rightBottomPoint).GetRandomPoint(50, 50);

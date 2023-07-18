@@ -38,4 +38,12 @@ public class Circle : Figure
         if(CentralPoint.Y - Radius < 0 || CentralPoint.Y + Radius > endPoint.Y)
             Speed = new Point(Speed.X, -Speed.Y);
     }
+
+    protected override System.Drawing.Rectangle GetHitBox()
+    {
+        var rectangle = new System.Drawing.Rectangle(CentralPoint.X - Radius, CentralPoint.Y - Radius, 
+            Radius * 2, Radius * 2);
+        
+        return rectangle;
+    }
 }

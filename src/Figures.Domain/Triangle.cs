@@ -43,4 +43,11 @@ public class Triangle : Figure
             Speed = new Point(Speed.X, -Speed.Y);
         }
     }
+
+    protected override System.Drawing.Rectangle GetHitBox()
+    {
+        return new System.Drawing.Rectangle(
+            new Point(CentralPoint.X - EdgeLength / 2, CentralPoint.Y - EdgeLength / 2), 
+            new Size(EdgeLength, EdgeLength));
+    }
 }

@@ -22,15 +22,16 @@ public class Rectangle : Figure
     
     public override GeometryFigure Draw()
     {
+        var hitBox = GetHitBox();
         return new GeometryFigure()
         {
             Type = FigureType.Rectangle,
             Points = new List<Point>
             {
-                new Point(CentralPoint.X - (Width / 2), CentralPoint.Y - (Height / 2)),
-                new Point(CentralPoint.X + (Width / 2), CentralPoint.Y - (Height / 2)),
-                new Point(CentralPoint.X + (Width / 2), CentralPoint.Y + (Height / 2)),
-                new Point(CentralPoint.X - (Width / 2), CentralPoint.Y + (Height / 2))
+                new(hitBox.X, hitBox.Y),
+                new(hitBox.X + hitBox.Width, hitBox.Y),
+                new(hitBox.X + hitBox.Width, hitBox.Y + hitBox.Height),
+                new Point(hitBox.X, hitBox.Y + hitBox.Height)
             },
             Radius = null
         };
@@ -43,5 +44,11 @@ public class Rectangle : Figure
         
         if(CentralPoint.Y - (Height / 2) < 0 || CentralPoint.Y + (Height / 2) > endPoint.Y)
             Speed = new Point(Speed.X, -Speed.Y);
+    }
+
+    protected override System.Drawing.Rectangle GetHitBox()
+    {
+        return new System.Drawing.Rectangle(CentralPoint.X - (Width / 2), CentralPoint.Y - (Height / 2),
+            Width, Height);
     }
 }
