@@ -4,12 +4,12 @@ using Newtonsoft.Json.Linq;
 
 namespace Figures.Infrastructure;
 
-public class JsonFileRepository : FileRepositoryBase
+public class JsonFileRepository<T> : FileRepositoryBase<T> where T : Figure
 {
     public JsonFileRepository(string filePath) : base(filePath)
     { }
     
-    protected override async Task SaveInPersistenceStorageAsync(FileStream stream, IEnumerable<Figure> figures)
+    protected override async Task SaveInPersistenceStorageAsync(FileStream stream, IEnumerable<T> figures)
     {
         var settings = new JsonSerializerSettings
         {
@@ -23,7 +23,7 @@ public class JsonFileRepository : FileRepositoryBase
         await writer.WriteAsync(json);
     }
 
-    protected override async Task<IEnumerable<Figure>> GetFromPersistenceStorageAsync(FileStream stream)
+    protected override async Task<IEnumerable<T>> GetFromPersistenceStorageAsync(FileStream stream)
     {
         using var reader = new StreamReader(stream);
         string json = await reader.ReadToEndAsync();
@@ -31,7 +31,7 @@ public class JsonFileRepository : FileRepositoryBase
         return DeserializeFigures(json);
     }
 
-    private IEnumerable<Figure> DeserializeFigures(string json)
+    private IEnumerable<T> DeserializeFigures(string json)
     {
         var settings = new JsonSerializerSettings
         {
@@ -39,7 +39,7 @@ public class JsonFileRepository : FileRepositoryBase
         };
         
         var jArray = JArray.Parse(json);
-        var figures = new List<Figure>();
+        var figures = new List<T>();
         
         foreach (var jToken in jArray)
         {
@@ -48,7 +48,7 @@ public class JsonFileRepository : FileRepositoryBase
                 throw new InvalidOperationException("Invalid json format");
             
             var type = Type.GetType(typeName);
-            var figure = (Figure)jToken.ToObject(type, JsonSerializer.Create(settings))!;
+            var figure = (T)jToken.ToObject(type, JsonSerializer.Create(settings))!;
             figures.Add(figure);
         }
         

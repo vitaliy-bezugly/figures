@@ -12,7 +12,6 @@ using Figures.Domain;
 using Figures.Domain.Args;
 using Figures.Domain.Exceptions;
 using Figures.Infrastructure;
-using log4net.Core;
 using Microsoft.Win32;
 using Point = System.Drawing.Point;
 
@@ -213,9 +212,9 @@ namespace Figures.UI
             var resolution = fileDialog.FileName.Split('.').Last();
             return resolution switch
             {
-                "json" => new JsonFileRepository(fileDialog.FileName),
-                "xml" => new XmlFileRepository(fileDialog.FileName),
-                "bin" => new BinaryFileRepository(fileDialog.FileName),
+                "json" => new JsonFileRepository<Figure>(fileDialog.FileName),
+                "xml" => new XmlFileRepository<Figure>(fileDialog.FileName),
+                "bin" => new BinaryFileRepository<Figure>(fileDialog.FileName),
                 _ => throw new InvalidOperationException("Unknown file type")
             };
         }
