@@ -70,7 +70,7 @@ public abstract class Figure
     protected virtual bool CheckFigureOutOfRegion(Point endPoint)
     {
         return CentralPoint.X < 0 || CentralPoint.Y < 0  ||
-               CentralPoint.X > endPoint.X || CentralPoint.Y > endPoint.Y;
+               CentralPoint.X > endPoint.X + 1 || CentralPoint.Y > endPoint.Y + 1;
     }
     
     protected virtual void IsIntersect(Figure figure)

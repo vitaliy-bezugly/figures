@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <PackageReference Include="Figures.SpawnRandomizer" Version="1.0.0" />
+      <PackageReference Include="log4net" Version="2.0.15" />
     </ItemGroup>
 
     <ItemGroup>
@@ -35,6 +36,12 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>Resources.en-US.resx</DependentUpon>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Log4Net.config">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

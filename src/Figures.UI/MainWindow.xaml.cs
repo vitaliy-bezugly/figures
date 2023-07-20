@@ -12,6 +12,7 @@ using Figures.Domain;
 using Figures.Domain.Args;
 using Figures.Domain.Exceptions;
 using Figures.Infrastructure;
+using log4net.Core;
 using Microsoft.Win32;
 using Point = System.Drawing.Point;
 
@@ -25,6 +26,8 @@ namespace Figures.UI
         private readonly ICollection<Figure> _figures = new List<Figure>();
         private readonly LocalizationManager _localizationManager;
         private int _figureCounter;
+        
+        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()!.DeclaringType);
 
         public MainWindow()
         {
@@ -260,7 +263,8 @@ namespace Figures.UI
             }
             catch (OutOfRegionException e)
             {
-                MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                e.Figure.MoveToSpecificLocation(new Point(100, 100));
+                Logger.Info(e.Message);
             }
             catch (Exception e)
             {
