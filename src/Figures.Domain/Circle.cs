@@ -17,7 +17,7 @@ public class Circle : Figure
 
     public int Radius { get; init; }
 
-    public override GeometryFigure Draw()
+    protected override GeometryFigure GetFigure()
     {
         return new GeometryFigure()
         {

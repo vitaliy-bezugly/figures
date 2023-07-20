@@ -20,7 +20,7 @@ public class Rectangle : Figure
     public int Width { get; set; }
     public int Height { get; set; }
     
-    public override GeometryFigure Draw()
+    protected override GeometryFigure GetFigure()
     {
         var hitBox = GetHitBox();
         return new GeometryFigure()

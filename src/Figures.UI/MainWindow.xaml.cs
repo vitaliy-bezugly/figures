@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Media;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,12 +20,17 @@ namespace Figures.UI
 {
     public partial class MainWindow
     {
+        private const int RedrawTime = 50;
+        private const int MoveTime = 50;
+        
         private readonly DispatcherTimer _timer = new();
         private readonly UiElementFactory _uiElementFactory = new();
         private readonly FiguresBuilder _figuresBuilder = new();
         private readonly ICollection<Figure> _figures = new List<Figure>();
         private readonly LocalizationManager _localizationManager;
         private int _figureCounter;
+        
+        private readonly object _drawingSyncObject = new();
         
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()!.DeclaringType);
 
@@ -38,20 +44,37 @@ namespace Figures.UI
             _figureCounter = 0;
 
             _timer.Tick += TimerOnTick;
-            _timer.Interval = TimeSpan.FromMilliseconds(50);
+            _timer.Interval = TimeSpan.FromMilliseconds(MoveTime);
             _timer.Start();
+            
+            // Start the drawing thread
+            ThreadPool.QueueUserWorkItem(_ => DrawFiguresThreadMethod());
         }
 
         private void TimerOnTick(object? sender, EventArgs e)
         {
             var bottomRightPoint = new Point(((int)MainCanvas.ActualWidth), ((int)MainCanvas.ActualHeight));
-
-            MainCanvas.Children.Clear();
-
+            
             if (_figures.Count == 0)
                 return;
 
             MoveFigures(_figures, bottomRightPoint);
+        }
+        
+        // This method will be run on a separate thread
+        private void DrawFiguresThreadMethod()
+        {
+            while (true)
+            {
+                // Check if there are any figures to draw
+                if (_figures.Count > 0)
+                {
+                    DrawFigures(_figures);
+                }
+
+                // Sleep for a short time to prevent the thread from consuming too much CPU time
+                Thread.Sleep(RedrawTime);
+            }
         }
 
         private void TreeViewItem_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -251,13 +274,7 @@ namespace Figures.UI
                 foreach (var figure in enumerable)
                 {
                     figure.Move(endPoint);
-
-                    var geometryFigure = figure.Draw();
-
                     figure.CheckIntersections(enumerable);
-
-                    var uiElement = _uiElementFactory.Create(geometryFigure);
-                    MainCanvas.Children.Add(uiElement);
                 }
             }
             catch (OutOfRegionException e)
@@ -265,10 +282,26 @@ namespace Figures.UI
                 e.Figure.MoveToSpecificLocation(new Point(100, 100));
                 Logger.Info(e.Message);
             }
-            catch (Exception e)
+        }
+        
+        private void DrawFigures(IEnumerable<Figure> figures)
+        {
+            var enumerable = figures as Figure[] ?? figures.ToArray();
+            
+            MainCanvas.Dispatcher.Invoke(() =>
             {
-                Console.WriteLine(e);
-                throw;
+                MainCanvas.Children.Clear();
+            });
+
+            foreach (var figure in enumerable)
+            {
+                // Access UI thread here for creating UIElement
+                MainCanvas.Dispatcher.Invoke(() =>
+                {
+                    var geometryFigure = figure.Draw();
+                    var uiElement = _uiElementFactory.Create(geometryFigure);
+                    MainCanvas.Children.Add(uiElement);
+                });
             }
         }
 

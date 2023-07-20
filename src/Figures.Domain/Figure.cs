@@ -11,6 +11,8 @@ namespace Figures.Domain;
 [XmlInclude(typeof(Triangle))]
 public abstract class Figure
 {
+    private readonly object _centralPointLock = new();
+
     public Figure()
     {
         CentralPoint = new Point(0, 0);
@@ -47,25 +49,40 @@ public abstract class Figure
     
     public virtual void MoveToSpecificLocation(Point newLocation)
     {
-        if (Stopped)
-            throw new InvalidOperationException("Figure is stopped");
+        lock (_centralPointLock)
+        {
+            if (Stopped)
+                throw new InvalidOperationException("Figure is stopped");
 
-        CentralPoint = newLocation;
+            CentralPoint = newLocation;
+            Speed = new Point(Math.Abs(Speed.X), Math.Abs(Speed.Y));
+        }
     }
 
     public virtual void Move(Point endPoint)
     {
-        if(Stopped)
-            return;
+        lock (_centralPointLock)
+        {
+            if(Stopped)
+                return;
 
-        if (CheckFigureOutOfRegion(endPoint))
-            throw new OutOfRegionException(this, CentralPoint);
+            if (CheckFigureOutOfRegion(endPoint))
+                throw new OutOfRegionException(this, CentralPoint);
         
-        EnsureRebound(endPoint);
-        CentralPoint = new Point(CentralPoint.X + Speed.X, CentralPoint.Y + Speed.Y);
+            EnsureRebound(endPoint);
+            CentralPoint = new Point(CentralPoint.X + Speed.X, CentralPoint.Y + Speed.Y);
+        }
     }
 
-    public abstract GeometryFigure Draw();
+    public GeometryFigure Draw()
+    {
+        lock (_centralPointLock)
+        {
+            return GetFigure();
+        }
+    }
+
+    protected abstract GeometryFigure GetFigure();
     
     protected virtual bool CheckFigureOutOfRegion(Point endPoint)
     {

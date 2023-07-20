@@ -17,7 +17,7 @@ public class Triangle : Figure
     
     public int EdgeLength { get; init; }
 
-    public override GeometryFigure Draw()
+    protected override GeometryFigure GetFigure()
     {
         return new GeometryFigure()
         {

@@ -4,7 +4,7 @@ namespace Figures.Domain;
 
 public class FigureNullObject : Figure
 {
-    public override GeometryFigure Draw()
+    protected override GeometryFigure GetFigure()
     {
         return new GeometryFigure();
     }
