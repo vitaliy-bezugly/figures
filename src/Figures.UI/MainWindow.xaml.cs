@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Figures.Domain;
 using Figures.Domain.Args;
+using Figures.Domain.Exceptions;
 using Figures.Infrastructure;
 using Microsoft.Win32;
 using Point = System.Drawing.Point;
@@ -241,18 +242,30 @@ namespace Figures.UI
 
         private void MoveFigures(IEnumerable<Figure> figures, Point endPoint)
         {
-            var enumerable = figures as Figure[] ?? figures.ToArray();
-            
-            foreach (var figure in enumerable)
+            try
             {
-                figure.Move(endPoint);
+                var enumerable = figures as Figure[] ?? figures.ToArray();
 
-                var geometryFigure = figure.Draw();
+                foreach (var figure in enumerable)
+                {
+                    figure.Move(endPoint);
 
-                figure.CheckIntersections(enumerable);
+                    var geometryFigure = figure.Draw();
 
-                var uiElement = _uiElementFactory.Create(geometryFigure);
-                MainCanvas.Children.Add(uiElement);
+                    figure.CheckIntersections(enumerable);
+
+                    var uiElement = _uiElementFactory.Create(geometryFigure);
+                    MainCanvas.Children.Add(uiElement);
+                }
+            }
+            catch (OutOfRegionException e)
+            {
+                MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 

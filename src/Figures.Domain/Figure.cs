@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Xml.Serialization;
 using Figures.Domain.Args;
+using Figures.Domain.Exceptions;
 
 namespace Figures.Domain;
 
@@ -43,17 +44,36 @@ public abstract class Figure
             }
         }
     }
+    
+    public virtual void MoveToSpecificLocation(Point newLocation)
+    {
+        if (Stopped)
+            throw new InvalidOperationException("Figure is stopped");
+
+        CentralPoint = newLocation;
+    }
 
     public virtual void Move(Point endPoint)
     {
         if(Stopped)
             return;
+
+        if (CheckFigureOutOfRegion(endPoint))
+            throw new OutOfRegionException(this, CentralPoint);
         
         EnsureRebound(endPoint);
         CentralPoint = new Point(CentralPoint.X + Speed.X, CentralPoint.Y + Speed.Y);
     }
+
+    public abstract GeometryFigure Draw();
     
-    public virtual void IsIntersect(Figure figure)
+    protected virtual bool CheckFigureOutOfRegion(Point endPoint)
+    {
+        return CentralPoint.X < 0 || CentralPoint.Y < 0  ||
+               CentralPoint.X > endPoint.X || CentralPoint.Y > endPoint.Y;
+    }
+    
+    protected virtual void IsIntersect(Figure figure)
     {
         System.Drawing.Rectangle currentHitBox = GetHitBox();
         System.Drawing.Rectangle otherHitBox = figure.GetHitBox();
@@ -62,7 +82,6 @@ public abstract class Figure
             OnIntersection(new IntersectionEventArgs(CentralPoint));
     }
     
-    public abstract GeometryFigure Draw();
     protected abstract void EnsureRebound(Point endPoint);
     protected abstract System.Drawing.Rectangle GetHitBox();
     
