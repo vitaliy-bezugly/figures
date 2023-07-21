@@ -29,9 +29,7 @@ namespace Figures.UI
         private readonly ICollection<Figure> _figures = new List<Figure>();
         private readonly LocalizationManager _localizationManager;
         private int _figureCounter;
-        
-        private readonly object _drawingSyncObject = new();
-        
+
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()!.DeclaringType);
 
         public MainWindow()
@@ -61,20 +59,14 @@ namespace Figures.UI
             MoveFigures(_figures, bottomRightPoint);
         }
         
-        // This method will be run on a separate thread
         private void DrawFiguresThreadMethod()
         {
             while (true)
             {
-                // Check if there are any figures to draw
-                if (_figures.Count > 0)
-                {
-                    DrawFigures(_figures);
-                }
-
-                // Sleep for a short time to prevent the thread from consuming too much CPU time
+                DrawFigures(_figures);
                 Thread.Sleep(RedrawTime);
             }
+            // ReSharper disable once FunctionNeverReturns
         }
 
         private void TreeViewItem_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -161,7 +153,7 @@ namespace Figures.UI
         {
             try
             {
-                IRepository<Figure> repository = ShowFileDialogAndGetSpecificRepo();
+                using IRepository<Figure> repository = ShowFileDialogAndGetSpecificRepo();
                 await repository.SaveManyAsync(_figures);
             }
             catch (Exception exception)
@@ -174,7 +166,7 @@ namespace Figures.UI
         {
             try
             {
-                var repository = ShowFileDialogAndGetSpecificRepo();
+                using IRepository<Figure> repository = ShowFileDialogAndGetSpecificRepo();
                 await LoadFiguresAndAddToCollectionAsync(repository);
 
                 MessageBox.Show("Figures loaded successfully", "Success", MessageBoxButton.OK,

@@ -2,28 +2,27 @@ namespace Figures.Infrastructure;
 
 public abstract class FileRepositoryBase<T> : IRepository<T> where T : class
 {
-    private readonly string _filePath;
+    private readonly FileStream _stream;
 
     protected FileRepositoryBase(string filePath)
     {
-        _filePath = filePath;
+        _stream = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
     }
     
     public async Task<IEnumerable<T>> GetAllAsync()
     {
-        if(File.Exists(_filePath) == false)
-            return Array.Empty<T>();
-
-        await using FileStream stream = File.OpenRead(_filePath);
-        return await GetFromPersistenceStorageAsync(stream);
+        return await GetFromPersistenceStorageAsync(_stream);
     }
     
     public async Task SaveManyAsync(IEnumerable<T> entities)
     {
-        await using FileStream stream = File.OpenWrite(_filePath);
-        
-        await ExecuteBeforeSaveAsync(stream);
-        await SaveInPersistenceStorageAsync(stream, entities);
+        await ExecuteBeforeSaveAsync(_stream);
+        await SaveInPersistenceStorageAsync(_stream, entities);
+    }
+    
+    public void Dispose()
+    {
+        _stream.Dispose();
     }
     
     protected virtual Task ExecuteBeforeSaveAsync(FileStream stream)
